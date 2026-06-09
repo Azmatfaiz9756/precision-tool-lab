@@ -16,27 +16,35 @@ export default function ProductCard({ product, index = 0 }) {
   const addToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    await apiClient.entities.CartItem.create({
-      product_id: product.id,
-      product_name: product.name,
-      product_image: product.images?.[0] || "",
-      price: product.price,
-      quantity: 1,
-    });
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-    toast.success("Added to cart");
+    try {
+      await apiClient.entities.CartItem.create({
+        product_id: product.id,
+        product_name: product.name,
+        product_image: product.images?.[0] || "",
+        price: product.price,
+        quantity: 1,
+      });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Added to cart");
+    } catch (e) {
+      toast.error("Please login to add to cart");
+    }
   };
 
   const addToWishlist = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    await apiClient.entities.WishlistItem.create({
-      product_id: product.id,
-      product_name: product.name,
-      product_image: product.images?.[0] || "",
-      price: product.price,
-    });
-    toast.success("Added to wishlist");
+    try {
+      await apiClient.entities.WishlistItem.create({
+        product_id: product.id,
+        product_name: product.name,
+        product_image: product.images?.[0] || "",
+        price: product.price,
+      });
+      toast.success("Added to wishlist");
+    } catch (e) {
+      toast.error("Please login to add to wishlist");
+    }
   };
 
   const inStock = (product.stock_quantity || 0) > 0;
@@ -98,7 +106,7 @@ export default function ProductCard({ product, index = 0 }) {
             </h3>
             <div className="flex items-center gap-1 mb-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`h-3 w-3 ${i < Math.round(product.average_rating || 0) ? "text-primary fill-primary" : "text-muted"}`} />
+                <Star key={i} className={`h-3 w-3 ${i < Math.round(product.average_rating || 0) ? "text-primary fill-primary" : "text-muted-foreground/30"}`} />
               ))}
               <span className="text-xs text-muted-foreground font-mono ml-1">({product.review_count || 0})</span>
             </div>

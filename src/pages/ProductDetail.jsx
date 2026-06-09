@@ -57,31 +57,57 @@ export default function ProductDetail() {
   });
 
   const addToCart = async () => {
-    await apiClient.entities.CartItem.create({
-      product_id: product.id,
-      product_name: product.name,
-      product_image: product.images?.[0] || "",
-      price: product.price,
-      quantity,
-    });
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-    toast.success("Added to cart");
+    try {
+      await apiClient.entities.CartItem.create({
+        product_id: product.id,
+        product_name: product.name,
+        product_image: product.images?.[0] || "",
+        price: product.price,
+        quantity,
+      });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Added to cart");
+    } catch (e) {
+      toast.error("Please login to add to cart");
+    }
   };
 
   const addToWishlist = async () => {
-    await apiClient.entities.WishlistItem.create({
-      product_id: product.id,
-      product_name: product.name,
-      product_image: product.images?.[0] || "",
-      price: product.price,
-    });
-    toast.success("Added to wishlist");
+    try {
+      await apiClient.entities.WishlistItem.create({
+        product_id: product.id,
+        product_name: product.name,
+        product_image: product.images?.[0] || "",
+        price: product.price,
+      });
+      toast.success("Added to wishlist");
+    } catch (e) {
+      toast.error("Please login to add to wishlist");
+    }
   };
 
-  const shareOnWhatsApp = () => {
+  const handleShare = async () => {
     const url = window.location.href;
-    const text = `Check out ${product.name} - ${formatPrice(product.price)} at TSTTOOLS`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
+    if (navigator.share) {
+      try { await navigator.share({ title: product.name, url }); } catch (e) {}
+    } else {
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(url);
+          toast.success("Link copied");
+        } else {
+          const textArea = document.createElement("textarea");
+          textArea.value = url;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          toast.success("Link copied");
+        }
+      } catch (e) {
+        toast.error("Failed to copy link");
+      }
+    }
   };
 
   if (isLoading) {
@@ -180,7 +206,7 @@ export default function ProductDetail() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`h-4 w-4 ${i < Math.round(product.average_rating || 0) ? "text-primary fill-primary" : "text-muted"}`} />
+                <Star key={i} className={`h-4 w-4 ${i < Math.round(product.average_rating || 0) ? "text-primary fill-primary" : "text-muted-foreground/30"}`} />
               ))}
             </div>
             <span className="text-sm text-muted-foreground font-mono">({product.review_count || 0} reviews)</span>
@@ -254,10 +280,14 @@ export default function ProductDetail() {
 
           {/* Quick actions */}
           <div className="flex items-center gap-4 pt-2">
-            <button onClick={shareOnWhatsApp} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
+            <button onClick={() => {
+                const url = window.location.href;
+                const text = `Check out ${product.name} - ${formatPrice(product.price)} at TSTTOOLS`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
+              }} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
               <MessageCircle className="h-3.5 w-3.5" /> Chat on WhatsApp
             </button>
-            <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied"); }}
+            <button onClick={handleShare}
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors">
               <Share2 className="h-3.5 w-3.5" /> Share
             </button>
@@ -279,7 +309,7 @@ export default function ProductDetail() {
               <div key={review.id} className="bg-card border border-border rounded-lg p-5">
                 <div className="flex items-center gap-1 mb-2">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={`h-3.5 w-3.5 ${i < review.rating ? "text-primary fill-primary" : "text-muted"}`} />
+                    <Star key={i} className={`h-3.5 w-3.5 ${i < review.rating ? "text-primary fill-primary" : "text-muted-foreground/30"}`} />
                   ))}
                   {review.is_verified_purchase && (
                     <Badge variant="secondary" className="ml-2 text-[10px]">Verified</Badge>
