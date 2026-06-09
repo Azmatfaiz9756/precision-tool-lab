@@ -90,14 +90,16 @@ switch ($method) {
             $sql  = "SELECT * FROM `$table` $whereClause $orderClause $limitClause";
             $stmt = $db->prepare($sql);
             $stmt->execute($params);
-            echo json_encode($stmt->fetchAll());
+            $results = $stmt->fetchAll();
+            $formatted = array_map('formatRow', $results);
+            echo json_encode($formatted);
         } else {
             // Single record
             $stmt = $db->prepare("SELECT * FROM `$table` WHERE id = ? LIMIT 1");
             $stmt->execute([$id]);
             $row = $stmt->fetch();
             if (!$row) { http_response_code(404); echo json_encode(['error' => 'Not found']); exit; }
-            echo json_encode($row);
+            echo json_encode(formatRow($row));
         }
         break;
 
@@ -118,7 +120,7 @@ switch ($method) {
         $stmt = $db->prepare("SELECT * FROM `$table` WHERE id = ?");
         $stmt->execute([$newId]);
         http_response_code(201);
-        echo json_encode($stmt->fetch());
+        echo json_encode(formatRow($stmt->fetch()));
         break;
 
     // ── UPDATE  PUT /entities/{Entity}/{id} ───────────────────────────────────
@@ -136,7 +138,7 @@ switch ($method) {
 
         $stmt = $db->prepare("SELECT * FROM `$table` WHERE id = ?");
         $stmt->execute([$id]);
-        echo json_encode($stmt->fetch());
+        echo json_encode(formatRow($stmt->fetch()));
         break;
 
     // ── DELETE  DELETE /entities/{Entity}/{id} ─────────────────────────────────
@@ -154,6 +156,23 @@ switch ($method) {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function formatRow(array $row): array {
+    $jsonFields = ['images', 'specifications', 'tags', 'shipping_address', 'items'];
+    foreach ($jsonFields as $field) {
+        if (isset($row[$field]) && is_string($row[$field])) {
+            $row[$field] = json_decode($row[$field], true);
+        }
+    }
+    // Map backend fields to what the frontend expects
+    if (isset($row['stock'])) {
+        $row['stock_quantity'] = (int)$row['stock'];
+    }
+    if (isset($row['rating'])) {
+        $row['average_rating'] = (float)$row['rating'];
+    }
+    return $row;
+}
 
 function buildInsert(array $data): array {
     $cols         = implode(', ', array_map(fn($k) => "`$k`", array_keys($data)));
