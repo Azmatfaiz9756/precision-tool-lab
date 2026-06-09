@@ -29,3 +29,10 @@ dist-ssr
 
 .env
 .vite
+
+# Temp / utility scripts
+create-admin.js
+enable-auth.js
+find_imgs.js
+fix_contact.js
+*.temp.js
