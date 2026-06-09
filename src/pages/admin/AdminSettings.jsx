@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Save, Store, Truck, Phone, Palette, Globe, Shield, Bell } from "lucide-react";
 import { SETTINGS_DEFAULTS } from "@/lib/utils";
+import { apiClient } from "@/api/apiClient";
 
 const SectionCard = ({ title, icon: Icon, children }) => (
   <div className="bg-background border border-border rounded-lg p-5 space-y-4">
@@ -28,22 +29,32 @@ const Field = ({ label, hint, children }) => (
 );
 
 export default function AdminSettings() {
-  const load = () => {
-    try { return { ...SETTINGS_DEFAULTS, ...JSON.parse(localStorage.getItem("tsttools_settings") || "{}") }; } catch { return SETTINGS_DEFAULTS; }
-  };
-  const [settings, setSettings] = useState(load);
+  const [settings, setSettings] = useState(SETTINGS_DEFAULTS);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient.settings.get().then(data => {
+      setSettings(prev => ({ ...prev, ...data }));
+    }).catch(console.error).finally(() => setLoading(false));
+  }, []);
 
   const set = (key, value) => setSettings(prev => ({ ...prev, [key]: value }));
 
   const saveAll = async () => {
     setSaving(true);
-    localStorage.setItem("tsttools_settings", JSON.stringify(settings));
-    window.dispatchEvent(new Event("local-settings-updated"));
-    await new Promise(r => setTimeout(r, 600));
-    setSaving(false);
-    toast.success("Settings saved successfully!");
+    try {
+      await apiClient.settings.update(settings);
+      window.dispatchEvent(new Event("local-settings-updated"));
+      toast.success("Settings saved successfully!");
+    } catch (err) {
+      toast.error("Failed to save settings");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) return <div className="p-4 text-muted-foreground">Loading settings...</div>;
 
   return (
     <div className="max-w-4xl space-y-4">

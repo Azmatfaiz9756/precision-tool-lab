@@ -107,10 +107,68 @@ const AuthenticatedApp = () => {
   );
 };
 
+import AntiScrape from '@/components/AntiScrape';
+import { useEffect } from 'react';
+import { apiClient } from '@/api/apiClient';
+
+function useSEO() {
+  useEffect(() => {
+    apiClient.settings.get().then(settings => {
+      if (settings.meta_title) {
+        document.title = settings.meta_title;
+      } else if (settings.store_name) {
+        document.title = settings.store_name;
+      }
+
+      if (settings.meta_description) {
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+          metaDesc = document.createElement('meta');
+          metaDesc.name = "description";
+          document.head.appendChild(metaDesc);
+        }
+        metaDesc.content = settings.meta_description;
+      }
+
+      if (settings.meta_keywords) {
+        let metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (!metaKeywords) {
+          metaKeywords = document.createElement('meta');
+          metaKeywords.name = "keywords";
+          document.head.appendChild(metaKeywords);
+        }
+        metaKeywords.content = settings.meta_keywords;
+      }
+    }).catch(console.error);
+
+    const handleUpdate = () => {
+      // Reload on local settings update
+      apiClient.settings.get().then(settings => {
+        if (settings.meta_title) document.title = settings.meta_title;
+        else if (settings.store_name) document.title = settings.store_name;
+
+        if (settings.meta_description) {
+          const m = document.querySelector('meta[name="description"]');
+          if (m) m.content = settings.meta_description;
+        }
+        if (settings.meta_keywords) {
+          const m = document.querySelector('meta[name="keywords"]');
+          if (m) m.content = settings.meta_keywords;
+        }
+      });
+    };
+    window.addEventListener("local-settings-updated", handleUpdate);
+    return () => window.removeEventListener("local-settings-updated", handleUpdate);
+  }, []);
+}
+
 function App() {
+  useSEO();
+
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
+        <AntiScrape />
         <Router>
           <AuthenticatedApp />
         </Router>

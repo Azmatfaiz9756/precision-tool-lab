@@ -213,4 +213,20 @@ export const apiClient = {
     ContactMessage: makeEntity('ContactMessage'),
     User:           makeEntity('User'),
   },
+  settings: {
+    get: async () => {
+      if (IS_MOCK_MODE) {
+        const str = localStorage.getItem("tsttools_settings");
+        return str ? JSON.parse(str) : {};
+      }
+      return apiRequest('GET', '/settings.php');
+    },
+    update: async (values) => {
+      if (IS_MOCK_MODE) {
+        localStorage.setItem("tsttools_settings", JSON.stringify(values));
+        return { success: true };
+      }
+      return apiRequest('POST', '/settings.php', values);
+    }
+  },
 };

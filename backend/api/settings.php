@@ -1,49 +1,66 @@
 <?php
-// ─── Store Settings Endpoint ──────────────────────────────────────────────────
-// GET  /settings        — public endpoint, returns all settings
-// PUT  /settings        — admin only, update settings
+require_once 'config.php';
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../middleware/auth.php';
+header('Content-Type: application/json');
 
-$method = $_SERVER['REQUEST_METHOD'];
-$db     = getDB();
+try {
+    $pdo = getDB();
 
-switch ($method) {
-    case 'GET':
-        // Public: no auth required
-        $stmt = $db->query('SELECT setting_key, setting_value FROM settings');
-        $rows = $stmt->fetchAll();
-
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        // Fetch all settings
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         $settings = [];
         foreach ($rows as $row) {
-            $decoded = json_decode($row['setting_value'], true);
-            $settings[$row['setting_key']] = $decoded !== null ? $decoded : $row['setting_value'];
+            $val = $row['setting_value'];
+            // Attempt to JSON decode if it's a JSON string, otherwise keep string
+            $decoded = json_decode($val, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $settings[$row['setting_key']] = $decoded;
+            } else {
+                $settings[$row['setting_key']] = $val;
+            }
         }
-
         echo json_encode($settings);
-        break;
+        exit;
+    }
 
-    case 'PUT':
-    case 'PATCH':
-        requireAdmin();
-        $body = json_decode(file_get_contents('php://input'), true) ?? [];
-
-        foreach ($body as $key => $value) {
-            if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $key)) continue; // whitelist keys
-            $encoded = json_encode($value);
-            $stmt = $db->prepare(
-                'INSERT INTO settings (setting_key, setting_value, updated_at)
-                 VALUES (?, ?, NOW())
-                 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = NOW()'
-            );
-            $stmt->execute([$key, $encoded]);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Update settings (expects a JSON object of key-value pairs)
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input || !is_array($input)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid JSON input']);
+            exit;
         }
 
-        echo json_encode(['success' => true, 'updated' => count($body)]);
-        break;
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
 
-    default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Method not allowed']);
+        foreach ($input as $key => $value) {
+            // Store as JSON string if array/object, else plain string
+            if (is_array($value) || is_object($value)) {
+                $valStr = json_encode($value);
+            } elseif (is_bool($value)) {
+                $valStr = $value ? 'true' : 'false';
+            } else {
+                $valStr = (string)$value;
+            }
+            $stmt->execute([$key, $valStr]);
+        }
+
+        $pdo->commit();
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+} catch (Exception $e) {
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
