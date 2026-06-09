@@ -3,7 +3,7 @@ name: 🚀 Deploy to Hostinger VPS
 on:
   push:
     branches:
-      - main   # main branch pe push hone par automatically deploy hoga
+      - main
 
 jobs:
   deploy:
@@ -11,22 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Code checkout ────────────────────────────────────────────────────
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Node.js setup ────────────────────────────────────────────────────
+      # ── 2. Node.js ──────────────────────────────────────────────────────────
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      # ── 3. Install dependencies ─────────────────────────────────────────────
+      # ── 3. Install ──────────────────────────────────────────────────────────
       - name: 📦 Install dependencies
         run: npm ci
 
-      # ── 4. Build React app ──────────────────────────────────────────────────
+      # ── 4. Build ────────────────────────────────────────────────────────────
       - name: 🏗️ Build production app
         run: npm run build
         env:
@@ -38,39 +38,35 @@ jobs:
           VITE_FIREBASE_APP_ID:              ${{ secrets.VITE_FIREBASE_APP_ID }}
           VITE_API_BASE_URL:                 ${{ secrets.VITE_API_BASE_URL }}
 
-      # ── 5. Deploy React dist/ to VPS public_html ────────────────────────────
-      - name: 📤 Deploy frontend (dist/) to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host:     ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key:      ${{ secrets.VPS_SSH_KEY }}
-          port:     ${{ secrets.VPS_PORT }}
-          source:   "dist/*"
-          target:   ${{ secrets.VPS_FRONTEND_PATH }}
-          strip_components: 1   # removes the "dist/" prefix
+      # ── 5. Setup SSH key ────────────────────────────────────────────────────
+      - name: 🔑 Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
 
-      # ── 6. Deploy PHP backend to VPS ────────────────────────────────────────
+      # ── 6. Deploy frontend dist/ via rsync ──────────────────────────────────
+      - name: 📤 Deploy frontend to VPS
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no" \
+            dist/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_FRONTEND_PATH }}/
+
+      # ── 7. Deploy PHP backend via rsync ─────────────────────────────────────
       - name: 📤 Deploy backend (PHP) to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host:     ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key:      ${{ secrets.VPS_SSH_KEY }}
-          port:     ${{ secrets.VPS_PORT }}
-          source:   "backend/*"
-          target:   ${{ secrets.VPS_BACKEND_PATH }}
-          strip_components: 1
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }} -o StrictHostKeyChecking=no" \
+            backend/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_BACKEND_PATH }}/
 
-      # ── 7. Post-deploy commands on VPS ──────────────────────────────────────
-      - name: 🔧 Run post-deploy commands on VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host:     ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key:      ${{ secrets.VPS_SSH_KEY }}
-          port:     ${{ secrets.VPS_PORT }}
-          script: |
-            echo "✅ Deployment complete at $(date)"
-            # Add any post-deploy commands here e.g.:
-            # php ${{ secrets.VPS_BACKEND_PATH }}/artisan migrate --force
+      # ── 8. Post-deploy: fix permissions ─────────────────────────────────────
+      - name: 🔧 Fix permissions on VPS
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -p ${{ secrets.VPS_PORT }} \
+            -o StrictHostKeyChecking=no \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "chown -R www-data:www-data ${{ secrets.VPS_FRONTEND_PATH }} && echo '✅ Deploy complete at '$(date)"
