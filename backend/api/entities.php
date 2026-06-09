@@ -171,6 +171,9 @@ function formatRow(array $row): array {
     if (isset($row['rating'])) {
         $row['average_rating'] = (float)$row['rating'];
     }
+    if (isset($row['created_at'])) {
+        $row['created_date'] = $row['created_at'];
+    }
     return $row;
 }
 
@@ -189,6 +192,9 @@ function buildOrderClause(string $order): string {
     if (!$order) return 'ORDER BY id DESC';
     $dir    = str_starts_with($order, '-') ? 'DESC' : 'ASC';
     $column = ltrim($order, '-');
+    if ($column === 'created_date') {
+        $column = 'created_at';
+    }
     // Whitelist safe column names
     if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $column)) return 'ORDER BY id DESC';
     return "ORDER BY `$column` $dir";
