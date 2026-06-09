@@ -1,0 +1,261 @@
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { Save, Store, Truck, Phone, Palette, Globe, Shield, Bell } from "lucide-react";
+import { SETTINGS_DEFAULTS } from "@/lib/utils";
+
+const SectionCard = ({ title, icon: Icon, children }) => (
+  <div className="bg-background border border-border rounded-lg p-5 space-y-4">
+    <div className="flex items-center gap-2 pb-2 border-b border-border">
+      <Icon className="h-4 w-4 text-primary" />
+      <h3 className="font-semibold text-sm">{title}</h3>
+    </div>
+    {children}
+  </div>
+);
+
+const Field = ({ label, hint, children }) => (
+  <div className="space-y-1.5">
+    <Label className="text-xs font-mono">{label}</Label>
+    {children}
+    {hint && <p className="text-[11px] text-muted-foreground">{hint}</p>}
+  </div>
+);
+
+export default function AdminSettings() {
+  const load = () => {
+    try { return { ...SETTINGS_DEFAULTS, ...JSON.parse(localStorage.getItem("tsttools_settings") || "{}") }; } catch { return SETTINGS_DEFAULTS; }
+  };
+  const [settings, setSettings] = useState(load);
+  const [saving, setSaving] = useState(false);
+
+  const set = (key, value) => setSettings(prev => ({ ...prev, [key]: value }));
+
+  const saveAll = async () => {
+    setSaving(true);
+    localStorage.setItem("tsttools_settings", JSON.stringify(settings));
+    window.dispatchEvent(new Event("local-settings-updated"));
+    await new Promise(r => setTimeout(r, 600));
+    setSaving(false);
+    toast.success("Settings saved successfully!");
+  };
+
+  return (
+    <div className="max-w-4xl space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-bold text-xl">Website Settings</h2>
+          <p className="text-muted-foreground text-xs mt-0.5">Manage all website configuration from here</p>
+        </div>
+        <Button onClick={saveAll} disabled={saving} className="bg-primary text-primary-foreground gap-2">
+          <Save className="h-4 w-4" />
+          {saving ? "Saving..." : "Save All Settings"}
+        </Button>
+      </div>
+
+      <Tabs defaultValue="store">
+        <TabsList className="bg-muted/50 flex-wrap h-auto gap-1 p-1">
+          <TabsTrigger value="store" className="text-xs gap-1"><Store className="h-3 w-3" />Store Info</TabsTrigger>
+          <TabsTrigger value="shipping" className="text-xs gap-1"><Truck className="h-3 w-3" />Shipping</TabsTrigger>
+          <TabsTrigger value="appearance" className="text-xs gap-1"><Palette className="h-3 w-3" />Appearance</TabsTrigger>
+          <TabsTrigger value="seo" className="text-xs gap-1"><Globe className="h-3 w-3" />SEO</TabsTrigger>
+          <TabsTrigger value="notifications" className="text-xs gap-1"><Bell className="h-3 w-3" />Notifications</TabsTrigger>
+          <TabsTrigger value="advanced" className="text-xs gap-1"><Shield className="h-3 w-3" />Advanced</TabsTrigger>
+        </TabsList>
+
+        {/* Store Info */}
+        <TabsContent value="store" className="space-y-4 mt-4">
+          <SectionCard title="Store Details" icon={Store}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Store Name">
+                <Input value={settings.store_name} onChange={e => set("store_name", e.target.value)} />
+              </Field>
+              <Field label="Store Tagline">
+                <Input value={settings.store_tagline} onChange={e => set("store_tagline", e.target.value)} />
+              </Field>
+              <Field label="Support Email">
+                <Input type="email" value={settings.store_email} onChange={e => set("store_email", e.target.value)} />
+              </Field>
+              <Field label="Phone Number">
+                <Input value={settings.store_phone} onChange={e => set("store_phone", e.target.value)} />
+              </Field>
+              <Field label="WhatsApp Number" hint="Include country code, no +">
+                <Input value={settings.whatsapp} onChange={e => set("whatsapp", e.target.value)} placeholder="971501234567" />
+              </Field>
+              <Field label="Store Address">
+                <Input value={settings.store_address} onChange={e => set("store_address", e.target.value)} />
+              </Field>
+              <Field label="Business Hours">
+                <Input value={settings.store_hours} onChange={e => set("store_hours", e.target.value)} placeholder="Sat-Thu: 9AM-9PM" />
+              </Field>
+              <div className="sm:col-span-2">
+                <Field label="Google Maps Embed URL" hint="Iframe src URL from Google Maps Share menu">
+                  <Input value={settings.google_maps_url} onChange={e => set("google_maps_url", e.target.value)} />
+                </Field>
+              </div>
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Social Media Links" icon={Globe}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Facebook Page URL">
+                <Input value={settings.facebook_url} onChange={e => set("facebook_url", e.target.value)} />
+              </Field>
+              <Field label="Instagram Profile URL">
+                <Input value={settings.instagram_url} onChange={e => set("instagram_url", e.target.value)} />
+              </Field>
+              <Field label="Twitter/X Profile URL">
+                <Input value={settings.twitter_url} onChange={e => set("twitter_url", e.target.value)} />
+              </Field>
+              <Field label="YouTube Channel URL">
+                <Input value={settings.youtube_url} onChange={e => set("youtube_url", e.target.value)} />
+              </Field>
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Contact Settings" icon={Phone}>
+            <Field label="Promotional Bar Text" hint="Shown at the top of the website">
+              <Input value={settings.promo_bar_text} onChange={e => set("promo_bar_text", e.target.value)} />
+            </Field>
+            <div className="flex items-center gap-3">
+              <Switch checked={settings.promo_bar_enabled} onCheckedChange={v => set("promo_bar_enabled", v)} />
+              <Label className="text-sm">Show promotional announcement bar</Label>
+            </div>
+          </SectionCard>
+        </TabsContent>
+
+        {/* Shipping */}
+        <TabsContent value="shipping" className="space-y-4 mt-4">
+          <SectionCard title="Shipping Settings" icon={Truck}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Free Shipping Threshold (AED)" hint="Orders above this get free shipping">
+                <Input type="number" value={settings.free_shipping_threshold} onChange={e => set("free_shipping_threshold", e.target.value)} />
+              </Field>
+              <Field label="Standard Shipping Cost (AED)">
+                <Input type="number" value={settings.shipping_cost} onChange={e => set("shipping_cost", e.target.value)} />
+              </Field>
+            </div>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center gap-3">
+                <Switch checked={settings.same_day_delivery} onCheckedChange={v => set("same_day_delivery", v)} />
+                <Label className="text-sm">Enable Same Day Delivery (Dubai)</Label>
+              </div>
+              <div className="flex items-center gap-3">
+                <Switch checked={settings.cod_enabled} onCheckedChange={v => set("cod_enabled", v)} />
+                <Label className="text-sm">Enable Cash on Delivery (COD)</Label>
+              </div>
+            </div>
+          </SectionCard>
+        </TabsContent>
+
+        {/* Appearance */}
+        <TabsContent value="appearance" className="space-y-4 mt-4">
+          <SectionCard title="Brand & Visuals" icon={Palette}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Primary Brand Color">
+                <div className="flex gap-2">
+                  <input type="color" value={settings.primary_color} onChange={e => set("primary_color", e.target.value)}
+                    className="h-9 w-14 rounded border border-border cursor-pointer bg-background" />
+                  <Input value={settings.primary_color} onChange={e => set("primary_color", e.target.value)} className="font-mono" />
+                </div>
+              </Field>
+              <Field label="Hero Badge Text">
+                <Input value={settings.hero_badge} onChange={e => set("hero_badge", e.target.value)} />
+              </Field>
+            </div>
+            <Field label="Banner/Announcement Text">
+              <Input value={settings.banner_text} onChange={e => set("banner_text", e.target.value)} />
+            </Field>
+          </SectionCard>
+        </TabsContent>
+
+        {/* SEO */}
+        <TabsContent value="seo" className="space-y-4 mt-4">
+          <SectionCard title="Search Engine Optimization" icon={Globe}>
+            <Field label="Meta Title" hint="Shown in browser tab and search results (50-60 chars recommended)">
+              <Input value={settings.meta_title} onChange={e => set("meta_title", e.target.value)} />
+              <p className="text-[11px] text-muted-foreground text-right">{settings.meta_title.length}/60</p>
+            </Field>
+            <Field label="Meta Description" hint="Shown in search results (150-160 chars recommended)">
+              <Textarea rows={3} value={settings.meta_description} onChange={e => set("meta_description", e.target.value)} />
+              <p className="text-[11px] text-muted-foreground text-right">{settings.meta_description.length}/160</p>
+            </Field>
+            <Field label="Keywords (comma separated)">
+              <Textarea rows={2} value={settings.meta_keywords} onChange={e => set("meta_keywords", e.target.value)} />
+            </Field>
+          </SectionCard>
+        </TabsContent>
+
+        {/* Notifications */}
+        <TabsContent value="notifications" className="space-y-4 mt-4">
+          <SectionCard title="Alert Settings" icon={Bell}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm font-medium">New Order Notifications</Label>
+                  <p className="text-xs text-muted-foreground">Get notified on every new order</p>
+                </div>
+                <Switch checked={settings.order_email_notify} onCheckedChange={v => set("order_email_notify", v)} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm font-medium">New Message Notifications</Label>
+                  <p className="text-xs text-muted-foreground">Get notified on contact form submissions</p>
+                </div>
+                <Switch checked={settings.new_message_notify} onCheckedChange={v => set("new_message_notify", v)} />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm font-medium">Low Stock Alerts</Label>
+                  <p className="text-xs text-muted-foreground">Alert when product stock drops below threshold</p>
+                </div>
+                <Switch checked={settings.low_stock_alert} onCheckedChange={v => set("low_stock_alert", v)} />
+              </div>
+              {settings.low_stock_alert && (
+                <Field label="Low Stock Threshold (units)">
+                  <Input type="number" className="w-32" value={settings.low_stock_threshold} onChange={e => set("low_stock_threshold", e.target.value)} />
+                </Field>
+              )}
+            </div>
+          </SectionCard>
+        </TabsContent>
+
+        {/* Advanced */}
+        <TabsContent value="advanced" className="space-y-4 mt-4">
+          <SectionCard title="Advanced Settings" icon={Shield}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                <div>
+                  <Label className="text-sm font-medium text-destructive">Maintenance Mode</Label>
+                  <p className="text-xs text-muted-foreground">Show maintenance page to all visitors</p>
+                </div>
+                <Switch checked={settings.maintenance_mode} onCheckedChange={v => set("maintenance_mode", v)} />
+              </div>
+
+              <div className="pt-2 border-t border-border">
+                <h4 className="text-sm font-semibold mb-3">Danger Zone</h4>
+                <div className="space-y-2">
+                  <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                    onClick={() => {
+                      if (confirm("Reset all settings to defaults?")) {
+                        setSettings(DEFAULTS);
+                        localStorage.removeItem("tsttools_settings");
+                        toast.success("Settings reset to defaults");
+                      }
+                    }}>
+                    Reset to Defaults
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </SectionCard>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
