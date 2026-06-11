@@ -93,7 +93,7 @@ export default function Navbar() {
                 <span className="font-heading font-black text-base tracking-tight uppercase">
                   {(settings.store_name || "").replace(/\s+/g, "").toUpperCase() === "TSTTOOLS" ? (
                     <>
-                      <span className="text-foreground">TST</span>
+                      <span className="text-black">TST</span>
                       <span className="text-[#00a854]">TOOLS</span>
                     </>
                   ) : (

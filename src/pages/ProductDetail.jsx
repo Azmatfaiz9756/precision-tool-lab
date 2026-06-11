@@ -20,6 +20,8 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({ transformOrigin: "center center", transform: "scale(1)" });
+  const [reviewForm, setReviewForm] = useState({ rating: 5, title: "", content: "", customer_name: "" });
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -88,25 +90,36 @@ export default function ProductDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: product.name, url }); } catch (e) {}
-    } else {
-      try {
-        if (navigator.clipboard) {
-          await navigator.clipboard.writeText(url);
-          toast.success("Link copied");
-        } else {
-          const textArea = document.createElement("textarea");
-          textArea.value = url;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand("copy");
-          document.body.removeChild(textArea);
-          toast.success("Link copied");
-        }
-      } catch (e) {
-        toast.error("Failed to copy link");
-      }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Product link copied to clipboard!");
+    } catch (e) {
+      toast.error("Failed to copy link");
+    }
+  };
+
+  const submitReview = async (e) => {
+    e.preventDefault();
+    if (!reviewForm.content || !reviewForm.title || !reviewForm.customer_name) {
+      toast.error("Please fill all fields");
+      return;
+    }
+    setIsSubmittingReview(true);
+    try {
+      await apiClient.entities.Review.create({
+        product_id: id,
+        rating: reviewForm.rating,
+        title: reviewForm.title,
+        content: reviewForm.content,
+        customer_name: reviewForm.customer_name,
+        is_approved: false,
+      });
+      toast.success("Review submitted! Waiting for approval.");
+      setReviewForm({ rating: 5, title: "", content: "", customer_name: "" });
+    } catch (err) {
+      toast.error("Failed to submit review");
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -301,10 +314,10 @@ export default function ProductDetail() {
       </div>
 
       {/* Reviews */}
-      {reviews.length > 0 && (
-        <section className="mt-16">
-          <h2 className="font-heading font-bold text-xl mb-6">Customer Reviews ({reviews.length})</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+      <section className="mt-16">
+        <h2 className="font-heading font-bold text-xl mb-6">Customer Reviews ({reviews.length})</h2>
+        {reviews.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 mb-8">
             {reviews.map((review) => (
               <div key={review.id} className="bg-card border border-border rounded-lg p-5">
                 <div className="flex items-center gap-1 mb-2">
@@ -321,8 +334,46 @@ export default function ProductDetail() {
               </div>
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <p className="text-muted-foreground mb-8">No reviews yet. Be the first to review this product!</p>
+        )}
+
+        <div className="bg-secondary/30 rounded-lg p-6 max-w-2xl border border-border">
+          <h3 className="font-semibold text-lg mb-4">Write a Review</h3>
+          <form onSubmit={submitReview} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Rating</label>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <button type="button" key={i} onClick={() => setReviewForm({ ...reviewForm, rating: i + 1 })} className="p-1 hover:scale-110 transition-transform">
+                    <Star className={`h-6 w-6 ${i < reviewForm.rating ? "text-primary fill-primary" : "text-muted-foreground/30"}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Your Name</label>
+                <Input value={reviewForm.customer_name} onChange={(e) => setReviewForm({ ...reviewForm, customer_name: e.target.value })} placeholder="John Doe" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Review Title</label>
+                <Input value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} placeholder="Great product!" required />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Your Review</label>
+              <textarea 
+                className="w-full flex min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
+                value={reviewForm.content} onChange={(e) => setReviewForm({ ...reviewForm, content: e.target.value })} placeholder="Tell us what you think..." required 
+              />
+            </div>
+            <Button type="submit" disabled={isSubmittingReview}>
+              {isSubmittingReview ? "Submitting..." : "Submit Review"}
+            </Button>
+          </form>
+        </div>
+      </section>
 
       {/* Related products */}
       {relatedProducts.filter((p) => p.id !== product.id).length > 0 && (
