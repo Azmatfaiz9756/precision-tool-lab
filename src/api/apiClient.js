@@ -10,8 +10,8 @@
 import initialProducts from './products.json';
 import { getCurrentIdToken } from '@/lib/firebaseAuth';
 
-const API_BASE_URL  = import.meta.env.VITE_API_BASE_URL || '';
-const IS_MOCK_MODE  = import.meta.env.VITE_API_MODE === 'mock' || !API_BASE_URL;
+const API_BASE_URL  = import.meta.env.VITE_API_BASE_URL || '/api';
+const IS_MOCK_MODE  = import.meta.env.VITE_API_MODE === 'mock';
 
 // ─── HTTP Helpers ─────────────────────────────────────────────────────────────
 
@@ -144,6 +144,20 @@ const getMockUser = () => {
 function makeEntity(name) {
   return {
     list:   async (order, limit) => IS_MOCK_MODE ? mockRequest.list(name, order, limit)   : apiRequest('GET',    `/entities/${name}?order=${order||''}&limit=${limit||''}`),
+    filter: async (filters, order, limit) => {
+      if (IS_MOCK_MODE) {
+        let items = mockRequest.list(name, order, limit);
+        for (const [k, v] of Object.entries(filters)) {
+          items = items.filter(i => i[k] === v);
+        }
+        return items;
+      }
+      const params = new URLSearchParams();
+      if (order) params.append('order', order);
+      if (limit) params.append('limit', limit);
+      for (const [k, v] of Object.entries(filters)) params.append(k, v);
+      return apiRequest('GET', `/entities/${name}?${params.toString()}`);
+    },
     get:    async (id)           => IS_MOCK_MODE ? mockRequest.get(name, id)               : apiRequest('GET',    `/entities/${name}/${id}`),
     create: async (values)       => IS_MOCK_MODE ? mockRequest.create(name, values)        : apiRequest('POST',   `/entities/${name}`, values),
     update: async (id, values)   => IS_MOCK_MODE ? mockRequest.update(name, id, values)    : apiRequest('PUT',    `/entities/${name}/${id}`, values),
@@ -219,17 +233,17 @@ export const apiClient = {
         const str = localStorage.getItem("tsttools_settings");
         return str ? JSON.parse(str) : {};
       }
-      return apiRequest('GET', '/settings.php');
+      return apiRequest('GET', '/settings');
     },
     update: async (values) => {
       if (IS_MOCK_MODE) {
         localStorage.setItem("tsttools_settings", JSON.stringify(values));
         return { success: true };
       }
-      return apiRequest('POST', '/settings.php', values);
+      return apiRequest('POST', '/settings', values);
     }
   },
   chat: {
-    send: (message) => apiRequest('POST', '/chat.php', { message })
+    send: (message) => apiRequest('POST', '/chat', { message })
   }
 };

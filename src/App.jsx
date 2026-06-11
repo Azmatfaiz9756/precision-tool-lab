@@ -42,6 +42,9 @@ import Shipping from '@/pages/Shipping';
 import Returns from '@/pages/Returns';
 import Terms from '@/pages/Terms';
 import Privacy from '@/pages/Privacy';
+import Cookie from '@/pages/Cookie';
+import Trademark from '@/pages/Trademark';
+import PaymentMethods from '@/pages/PaymentMethods';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -82,6 +85,9 @@ const AuthenticatedApp = () => {
         <Route path="/returns" element={<Returns />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/cookie" element={<Cookie />} />
+        <Route path="/trademark" element={<Trademark />} />
+        <Route path="/payment-methods" element={<PaymentMethods />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>

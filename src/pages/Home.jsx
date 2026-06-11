@@ -5,6 +5,7 @@ import { CATEGORIES } from "@/lib/constants";
 import HeroSlider from "@/components/home/HeroSlider";
 import CategoriesGrid from "@/components/home/CategoriesGrid";
 import BestsellersCarousel from "@/components/home/BestsellersCarousel";
+import PartnerBrands from "@/components/home/PartnerBrands";
 import ReviewsSection from "@/components/home/ReviewsSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 
@@ -23,9 +24,15 @@ const CATEGORY_IMAGES = {
 };
 
 export default function Home() {
-  const { data: products = [] } = useQuery({
+  const { data: bestsellers = [] } = useQuery({
     queryKey: ["products-bestsellers"],
     queryFn: () => apiClient.entities.Product.filter({ is_bestseller: true }, "-created_date", 10),
+    initialData: [],
+  });
+
+  const { data: newArrivals = [] } = useQuery({
+    queryKey: ["products-new-arrivals"],
+    queryFn: () => apiClient.entities.Product.list("-created_date", 10),
     initialData: [],
   });
 
@@ -33,7 +40,22 @@ export default function Home() {
     <div>
       <HeroSlider />
       <CategoriesGrid categories={CATEGORIES} categoryImages={CATEGORY_IMAGES} />
-      <BestsellersCarousel products={products} />
+      
+      {/* New Arrivals Section */}
+      <BestsellersCarousel 
+        products={newArrivals} 
+        title="New Arrivals" 
+        subtitle="The latest tools and equipment added to our catalog" 
+      />
+      
+      {/* Best Selling Section */}
+      <BestsellersCarousel 
+        products={bestsellers} 
+        title="Best Selling" 
+        subtitle="Most popular tools among UAE technicians" 
+      />
+      
+      <PartnerBrands />
       <ReviewsSection />
       <NewsletterSection />
     </div>

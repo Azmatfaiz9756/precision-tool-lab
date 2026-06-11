@@ -102,22 +102,22 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-sm mb-4">Quick Links</h4>
+          <h4 className="font-semibold text-sm mb-4">Customer Support</h4>
           <div className="flex flex-col gap-2.5">
-            <Link to="/shop" className="text-sm text-muted-foreground hover:text-primary transition-colors">Shop All</Link>
-            <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</Link>
-            <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link>
             <Link to="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors">FAQ</Link>
+            <Link to="/payment-methods" className="text-sm text-muted-foreground hover:text-primary transition-colors">Payment Methods</Link>
+            <Link to="/shipping" className="text-sm text-muted-foreground hover:text-primary transition-colors">Shipping Policy</Link>
+            <Link to="/returns" className="text-sm text-muted-foreground hover:text-primary transition-colors">Return Policy</Link>
           </div>
         </div>
 
         <div>
-          <h4 className="font-semibold text-sm mb-4">Policies</h4>
+          <h4 className="font-semibold text-sm mb-4">Policies & Legal</h4>
           <div className="flex flex-col gap-2.5">
-            <Link to="/shipping" className="text-sm text-muted-foreground hover:text-primary transition-colors">Shipping & Delivery</Link>
-            <Link to="/returns" className="text-sm text-muted-foreground hover:text-primary transition-colors">Return Policy</Link>
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms & Conditions</Link>
             <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link to="/cookie" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link>
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms and Conditions</Link>
+            <Link to="/trademark" className="text-sm text-muted-foreground hover:text-primary transition-colors">Trademark Notice</Link>
           </div>
         </div>
 

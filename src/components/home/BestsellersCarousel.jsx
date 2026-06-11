@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/products/ProductCard";
 
-export default function BestsellersCarousel({ products }) {
+export default function BestsellersCarousel({ products, title = "Bestsellers", subtitle = "Most popular tools among UAE technicians" }) {
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
@@ -20,8 +20,10 @@ export default function BestsellersCarousel({ products }) {
     <section className="max-w-7xl mx-auto px-4 py-16">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="font-heading font-bold text-2xl md:text-3xl">Bestsellers</h2>
-          <p className="text-muted-foreground text-sm mt-1">Most popular tools among UAE technicians</p>
+          <h2 className="font-heading font-black text-3xl md:text-4xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-500 uppercase">
+            {title}
+          </h2>
+          <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" className="h-9 w-9 rounded-full" onClick={() => scroll("left")}>

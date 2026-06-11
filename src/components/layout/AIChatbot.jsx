@@ -181,7 +181,7 @@ export default function AIChatbot() {
       console.error(e);
       return {
         type: "text",
-        text: "Oops, I'm having trouble connecting to my AI brain right now. Please try again later!"
+        text: e.message || "Oops, I'm having trouble connecting to my AI brain right now. Please try again later!"
       };
     }
   };

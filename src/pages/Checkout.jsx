@@ -216,9 +216,41 @@ export default function Checkout() {
             <div className="flex justify-between font-bold text-lg"><span>Total</span><span className="font-mono text-primary">{formatPrice(total)}</span></div>
           </div>
 
-          <Button size="lg" className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold" onClick={placeOrder} disabled={placing}>
+          <Button size="lg" className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-md" onClick={placeOrder} disabled={placing}>
             {placing ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Placing Order...</> : "Place Order"}
           </Button>
+
+          {/* Trust Badges */}
+          <div className="mt-6 pt-6 border-t border-border space-y-4">
+            <div className="flex flex-col items-center justify-center gap-1.5 text-center">
+              <div className="flex items-center gap-1.5 text-[#00a854] font-semibold text-sm">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                Secure & Trusted Checkout
+              </div>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest flex flex-wrap justify-center gap-x-2 gap-y-1">
+                <span>Mastercard</span> • <span>PayPal</span> • <span>Visa</span> • <span>Apple Pay</span> • <span>Google Pay</span>
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
+                <svg className="w-6 h-6 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <div className="text-[9px] font-medium leading-tight">100% QUALITY<br/>BEST CHOICE</div>
+              </div>
+              <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
+                <svg className="w-6 h-6 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div className="text-[9px] font-medium leading-tight">GUARANTEED<br/>SATISFACTION</div>
+              </div>
+              <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
+                <svg className="w-6 h-6 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+                <div className="text-[9px] font-medium leading-tight">100% MONEYBACK<br/>GUARANTEE</div>
+              </div>
+              <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-md">
+                <svg className="w-6 h-6 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <div className="text-[9px] font-medium leading-tight">FREE RETURN<br/>GUARANTEE</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

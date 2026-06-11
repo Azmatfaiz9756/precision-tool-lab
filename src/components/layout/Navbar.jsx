@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown, LayoutGrid, BarChart2 } from "lucide-react";
+import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown, LayoutGrid, BarChart2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("Dubai");
 
   const { data: cartItems = [] } = useQuery({
     queryKey: ["cart"],
@@ -27,6 +28,43 @@ export default function Navbar() {
   });
 
   const cartCount = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+  const PHRASES = [
+    "Search tools, kits, equipment...",
+    "Makita power drills...",
+    "Stanley hand tools...",
+    "Dewalt professional kits...",
+    "Bosch angle grinders...",
+    "Heavy duty machinery..."
+  ];
+
+  const [placeholderText, setPlaceholderText] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentPhrase = PHRASES[phraseIndex];
+    let typingSpeed = isDeleting ? 40 : 100;
+
+    if (!isDeleting && placeholderText === currentPhrase) {
+      const timeout = setTimeout(() => setIsDeleting(true), 2000);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isDeleting && placeholderText === "") {
+      setIsDeleting(false);
+      setPhraseIndex((prev) => (prev + 1) % PHRASES.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setPlaceholderText((prev) => 
+        isDeleting ? prev.slice(0, -1) : currentPhrase.slice(0, prev.length + 1)
+      );
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [placeholderText, isDeleting, phraseIndex]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -41,10 +79,32 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       {/* Top bar */}
       {settings.promo_bar_enabled && (
-        <div className="border-b border-border/50">
+        <div className="border-b border-border/50 bg-secondary/20">
           <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
-            <span>{settings.promo_bar_text}</span>
-            <span className="hidden sm:block">AED Prices · UAE Market</span>
+            <div className="flex items-center gap-4">
+              <span>{settings.promo_bar_text}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer relative group">
+                <MapPin className="h-3 w-3 text-primary" />
+                <select 
+                  className="bg-transparent border-none outline-none appearance-none cursor-pointer pr-4 hover:text-foreground focus:ring-0 focus:outline-none focus:border-none"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  title="Select your delivery city"
+                >
+                  <option value="Dubai">Dubai</option>
+                  <option value="Abu Dhabi">Abu Dhabi</option>
+                  <option value="Sharjah">Sharjah</option>
+                  <option value="Ajman">Ajman</option>
+                  <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+                  <option value="Fujairah">Fujairah</option>
+                  <option value="Umm Al Quwain">Umm Al Quwain</option>
+                </select>
+                <ChevronDown className="h-2 w-2 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+              </div>
+              <span className="hidden sm:block">AED Prices · UAE Market</span>
+            </div>
           </div>
         </div>
       )}
@@ -132,7 +192,7 @@ export default function Navbar() {
           <div className="flex-1 max-w-xl mx-2 hidden sm:block">
             <form onSubmit={handleSearch} className="flex items-center w-full border border-border rounded bg-secondary/30 focus-within:ring-1 focus-within:ring-[#00a854] focus-within:border-[#00a854] transition-all overflow-hidden">
               <Input
-                placeholder="Search tools, kits, equipment..."
+                placeholder={placeholderText || "Search tools..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 h-9 px-3 text-xs border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
@@ -203,7 +263,7 @@ export default function Navbar() {
             <form onSubmit={handleSearch} className="flex gap-2">
               <Input
                 autoFocus
-                placeholder="Search tools, kits, equipment..."
+                placeholder={placeholderText || "Search tools..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-secondary border-border font-body"

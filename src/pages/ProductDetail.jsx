@@ -8,6 +8,7 @@ import ImageZoomModal from "@/components/products/ImageZoomModal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { Star, ShoppingCart, Heart, MessageCircle, Minus, Plus, Check, ChevronRight, Share2, Truck, ZoomIn } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -22,6 +23,7 @@ export default function ProductDetail() {
   const [zoomStyle, setZoomStyle] = useState({ transformOrigin: "center center", transform: "scale(1)" });
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: "", content: "", customer_name: "" });
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [activeTab, setActiveTab] = useState("description");
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -47,7 +49,7 @@ export default function ProductDetail() {
 
   const { data: reviews = [] } = useQuery({
     queryKey: ["reviews", id],
-    queryFn: () => apiClient.entities.Review.filter({ product_id: id, is_approved: true }),
+    queryFn: () => apiClient.entities.Review.filter({ product_id: id }),
     initialData: [],
   });
 
@@ -90,9 +92,21 @@ export default function ProductDetail() {
 
   const handleShare = async () => {
     const url = window.location.href;
+    const title = product.name;
+    const text = `Check out ${product.name} at TSTTOOLS!`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+        return;
+      } catch (e) {
+        // User might have canceled the share, just fall through
+      }
+    }
+    
     try {
       await navigator.clipboard.writeText(url);
-      toast.success("Product link copied to clipboard!");
+      toast.success("Product link copied! Share it with your friends.");
     } catch (e) {
       toast.error("Failed to copy link");
     }
@@ -110,11 +124,11 @@ export default function ProductDetail() {
         product_id: id,
         rating: reviewForm.rating,
         title: reviewForm.title,
-        content: reviewForm.content,
-        customer_name: reviewForm.customer_name,
-        is_approved: false,
+        body: reviewForm.content,
+        user_name: reviewForm.customer_name,
       });
-      toast.success("Review submitted! Waiting for approval.");
+      queryClient.invalidateQueries({ queryKey: ["reviews", id] });
+      toast.success("Review submitted successfully!");
       setReviewForm({ rating: 5, title: "", content: "", customer_name: "" });
     } catch (err) {
       toast.error("Failed to submit review");
@@ -235,34 +249,67 @@ export default function ProductDetail() {
             )}
           </div>
 
-          <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+          {/* Tabs */}
+          <div className="flex gap-4 border-b border-border text-sm font-medium overflow-x-auto scrollbar-hide">
+            <button onClick={() => setActiveTab("description")} className={`pb-2 whitespace-nowrap transition-colors ${activeTab === "description" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>Description</button>
+            <button onClick={() => setActiveTab("features")} className={`pb-2 whitespace-nowrap transition-colors ${activeTab === "features" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>Features</button>
+            <button onClick={() => setActiveTab("specs")} className={`pb-2 whitespace-nowrap transition-colors ${activeTab === "specs" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>Specifications</button>
+            <button onClick={() => setActiveTab("variations")} className={`pb-2 whitespace-nowrap transition-colors ${activeTab === "variations" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>Variations</button>
+          </div>
 
-          {/* Features */}
-          {product.features?.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold mb-2">Key Features</h3>
-              <ul className="space-y-1.5">
-                {product.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className="min-h-[120px] pt-2">
+            {activeTab === "description" && (
+              <p className="text-muted-foreground leading-relaxed text-sm">{product.description || "No description available."}</p>
+            )}
+            
+            {activeTab === "features" && (
+              <div className="space-y-4">
+                {product.features?.length > 0 ? (
+                  <ul className="space-y-1.5">
+                    {product.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p className="text-muted-foreground text-sm">No specific features listed.</p>}
+                
+                {product.whats_included?.length > 0 && (
+                  <div className="pt-2">
+                    <h4 className="text-sm font-semibold mb-2 text-foreground">What's Included:</h4>
+                    <ul className="space-y-1">
+                      {product.whats_included.map((item, i) => (
+                        <li key={i} className="text-sm text-muted-foreground">• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {activeTab === "specs" && (
+              <div className="text-sm">
+                {product.specifications ? (
+                  <table className="w-full text-left text-muted-foreground">
+                    <tbody>
+                      {Object.entries(product.specifications).map(([k, v]) => (
+                        <tr key={k} className="border-b border-border/50 last:border-0">
+                          <td className="py-2 pr-4 font-medium text-foreground w-1/3">{k}</td>
+                          <td className="py-2">{v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : <p className="text-muted-foreground text-sm">Specifications not provided.</p>}
+              </div>
+            )}
 
-          {/* What's included */}
-          {product.whats_included?.length > 0 && (
-            <div>
-              <h3 className="text-sm font-semibold mb-2">What's Included</h3>
-              <ul className="space-y-1">
-                {product.whats_included.map((item, i) => (
-                  <li key={i} className="text-sm text-muted-foreground">• {item}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {activeTab === "variations" && (
+              <div className="text-sm text-muted-foreground">
+                 <p>Standard version selected. Please contact us via WhatsApp to check availability for other variants.</p>
+              </div>
+            )}
+          </div>
 
           <Separator className="bg-border" />
 
@@ -329,8 +376,8 @@ export default function ProductDetail() {
                   )}
                 </div>
                 {review.title && <p className="font-semibold text-sm mb-1">{review.title}</p>}
-                <p className="text-sm text-muted-foreground">{review.content}</p>
-                <p className="text-xs text-muted-foreground mt-2">{review.customer_name || "Customer"}</p>
+                <p className="text-sm text-muted-foreground">{review.body}</p>
+                <p className="text-xs text-muted-foreground mt-2">{review.user_name || "Customer"}</p>
               </div>
             ))}
           </div>
@@ -378,7 +425,7 @@ export default function ProductDetail() {
       {/* Related products */}
       {relatedProducts.filter((p) => p.id !== product.id).length > 0 && (
         <section className="mt-16">
-          <h2 className="font-heading font-bold text-xl mb-6">Related Products</h2>
+          <h2 className="font-heading font-bold text-xl mb-6">Recommended / Alternative Products</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {relatedProducts.filter((p) => p.id !== product.id).slice(0, 4).map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />

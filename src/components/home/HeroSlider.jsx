@@ -5,15 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
   {
-    category: "Soldering Stations",
-    label: "SOLDERING STATIONS",
-    tagline: "Professional rework & hot air stations for precision PCB repair",
-    link: "/shop?category=soldering_kits",
-    accent: "#f59e0b",
+    category: "Featured Preheater",
+    label: "MIJING IREPAIR MS1",
+    tagline: "Intelligent PCB Preheater for precise motherboard separation",
+    link: "/shop?search=mijing",
+    accent: "#ef4444",
     images: [
-      "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png",
-      "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/hotairgun_6.jpg",
+      "https://www.diyfixtool.com/cdn/shop/files/Mijing_iRepair_MS1_1.jpg",
     ],
   },
   {
@@ -133,7 +131,7 @@ export default function HeroSlider() {
                     onError={(e) => { e.target.style.opacity = "0.05"; }}
                   />
                   {i < slide.images.length - 1 && (
-                    <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-white/10 z-10" />
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[2px] h-[70%] bg-gradient-to-b from-transparent via-white/30 to-transparent z-10" />
                   )}
                 </div>
               ))}
