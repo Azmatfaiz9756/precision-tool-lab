@@ -91,7 +91,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col leading-none hidden sm:flex">
                 <span className="font-heading font-black text-base tracking-tight uppercase">
-                  {settings.store_name?.toUpperCase() === "TSTTOOLS" ? (
+                  {(settings.store_name || "").replace(/\s+/g, "").toUpperCase() === "TSTTOOLS" ? (
                     <>
                       <span className="text-foreground">TST</span>
                       <span className="text-[#00a854]">TOOLS</span>

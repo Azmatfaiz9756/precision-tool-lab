@@ -34,7 +34,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div>
           <span className="font-heading font-black text-xl tracking-tight uppercase">
-            {settings.store_name?.toUpperCase() === "TSTTOOLS" ? (
+            {(settings.store_name || "").replace(/\s+/g, "").toUpperCase() === "TSTTOOLS" ? (
               <>
                 <span className="text-foreground">TST</span>
                 <span className="text-[#00a854]">TOOLS</span>
