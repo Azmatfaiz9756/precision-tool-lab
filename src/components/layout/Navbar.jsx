@@ -90,8 +90,15 @@ export default function Navbar() {
                 </svg>
               </div>
               <div className="flex flex-col leading-none hidden sm:flex">
-                <span className="font-heading font-black text-base tracking-tight text-foreground uppercase">
-                  {settings.store_name}
+                <span className="font-heading font-black text-base tracking-tight uppercase">
+                  {settings.store_name?.toUpperCase() === "TSTTOOLS" ? (
+                    <>
+                      <span className="text-foreground">TST</span>
+                      <span className="text-[#00a854]">TOOLS</span>
+                    </>
+                  ) : (
+                    <span className="text-foreground">{settings.store_name}</span>
+                  )}
                 </span>
                 <span className="text-[8px] text-muted-foreground font-mono tracking-wider mt-0.5 uppercase">
                   {settings.store_tagline}
