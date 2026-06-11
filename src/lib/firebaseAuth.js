@@ -24,7 +24,8 @@ import { auth, googleProvider } from './firebase';
  */
 const ADMIN_EMAILS = [
   'admin@tsttools.com',
-  'azmatfaiz9756@gmail.com', // Firebase account owner always admin
+  'azmatfaiz9756@gmail.com',
+  'tsttools@gmail.com',
 ];
 
 /** Convert a Firebase User object to our app's standard user shape */
