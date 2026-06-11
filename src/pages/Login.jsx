@@ -20,7 +20,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await loginWithEmail(email, password);
+      await loginWithEmail(email.trim(), password);
       window.location.href = "/";
     } catch (err) {
       setError(mapFirebaseError(err.code) || err.message || "Invalid email or password");
