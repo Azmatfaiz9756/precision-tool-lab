@@ -1,5 +1,6 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../middleware/auth.php';
 
 header('Content-Type: application/json');
 
@@ -7,7 +8,7 @@ try {
     $pdo = getDB();
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        // Fetch all settings
+        // Fetch all settings (public read)
         $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -27,6 +28,7 @@ try {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        requireAdmin(); // Ensure only admins can update settings
         // Update settings (expects a JSON object of key-value pairs)
         $input = json_decode(file_get_contents('php://input'), true);
         if (!$input || !is_array($input)) {

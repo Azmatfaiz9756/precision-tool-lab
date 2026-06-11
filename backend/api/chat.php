@@ -1,10 +1,10 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../config/database.php';
 
 header('Content-Type: application/json');
 
 function callGemini($prompt, $apiKey) {
-    $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey;
+    $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . $apiKey;
     
     $data = [
         'contents' => [
@@ -105,7 +105,7 @@ OR
         $productsContext = "No matching products found.";
         
         if (count($conditions) > 0) {
-            $sql = "SELECT id, name, price, stock_quantity FROM products WHERE " . implode(' AND ', $conditions) . " LIMIT 5";
+            $sql = "SELECT id, name, price, stock FROM products WHERE " . implode(' AND ', $conditions) . " LIMIT 5";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
             $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ OR
             if (count($products) > 0) {
                 $productsContext = "Found these products in the database:\n";
                 foreach ($products as $p) {
-                    $stock = $p['stock_quantity'] > 0 ? "In Stock" : "Out of Stock";
+                    $stock = $p['stock'] > 0 ? "In Stock" : "Out of Stock";
                     $productsContext .= "- {$p['name']} (Price: AED {$p['price']}, Status: $stock, Link ID: {$p['id']})\n";
                 }
             }

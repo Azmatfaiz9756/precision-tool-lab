@@ -54,6 +54,9 @@ switch ($resource) {
     case 'contact':
         require __DIR__ . '/api/contact.php';
         break;
+    case 'chat':
+        require __DIR__ . '/api/chat.php';
+        break;
     default:
         http_response_code(404);
         echo json_encode(['error' => "Unknown resource: $resource"]);

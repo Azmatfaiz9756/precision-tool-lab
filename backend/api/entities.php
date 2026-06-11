@@ -83,6 +83,15 @@ switch ($method) {
                 $params[] = "%$search%";
             }
 
+            // Generic filters (exclude reserved keywords)
+            $reserved = ['order', 'limit', 'offset', 'search'];
+            foreach ($_GET as $key => $value) {
+                if (!in_array($key, $reserved) && preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $key)) {
+                    $where[] = "`$key` = ?";
+                    $params[] = $value;
+                }
+            }
+
             $orderClause = buildOrderClause($order);
             $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
             $limitClause = $limit ? "LIMIT $limit OFFSET $offset" : '';
