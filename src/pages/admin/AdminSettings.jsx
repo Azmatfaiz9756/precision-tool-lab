@@ -249,6 +249,12 @@ export default function AdminSettings() {
               </div>
 
               <div className="pt-2 border-t border-border">
+                <Field label="Gemini AI API Key" hint="Used for the intelligent store chatbot. Starts with AIzaSy or similar.">
+                  <Input type="password" value={settings.gemini_api_key || ""} onChange={e => set("gemini_api_key", e.target.value)} placeholder="Enter Gemini API Key..." />
+                </Field>
+              </div>
+
+              <div className="pt-4 border-t border-border">
                 <h4 className="text-sm font-semibold mb-3">Danger Zone</h4>
                 <div className="space-y-2">
                   <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10"

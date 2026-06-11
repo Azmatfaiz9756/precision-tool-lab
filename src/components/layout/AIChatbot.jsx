@@ -117,97 +117,11 @@ export default function AIChatbot() {
     }
   };
 
-  // Bot response NLP matcher
+  // Bot response using Gemini AI Backend
   const generateBotResponse = async (input) => {
     const query = input.toLowerCase().trim();
 
-    // 1. Shipping Policy
-    if (
-      query.includes("shipping") ||
-      query.includes("delivery") ||
-      query.includes("charge") ||
-      query.includes("ship") ||
-      query.includes("deliver") ||
-      query.includes("arrive") ||
-      query.includes("time") ||
-      query.includes("cod") ||
-      query.includes("cost")
-    ) {
-      return {
-        type: "text",
-        text: `🚚 **Shipping & Delivery Policy**\n\nWe deliver to all seven Emirates in the UAE:\n\n• **Dubai**: Same-day or next-day delivery (Same-day for orders placed before 2 PM).\n• **Abu Dhabi & Sharjah**: 1-2 business days.\n• **Other Emirates**: 2-3 business days.\n• **Shipping Fee**: AED ${settings.shipping_cost} (Free for orders over AED ${settings.free_shipping_threshold}).\n• **Cash on Delivery (COD)**: ${settings.cod_enabled ? `Available with an additional AED 10 service fee.` : `Currently unavailable (Card/Transfer only).`}`
-      };
-    }
-
-    // 2. Returns and Refunds
-    if (
-      query.includes("return") ||
-      query.includes("refund") ||
-      query.includes("exchange") ||
-      query.includes("defect") ||
-      query.includes("broken") ||
-      query.includes("replace") ||
-      query.includes("change") ||
-      query.includes("warranty")
-    ) {
-      return {
-        type: "text",
-        text: `📦 **Return & Refund Policy**\n\n• **Unused Items**: 30-day return window for items in their original, unopened packaging.\n• **Defective Items**: Defective or damaged items can be returned within 60 days.\n• **How to return**: Email **${settings.store_email}** or chat with us on WhatsApp at **${settings.whatsapp}** with your order details.`
-      };
-    }
-
-    // 3. Store Hours / Timings
-    if (
-      query.includes("hour") ||
-      query.includes("time") ||
-      query.includes("open") ||
-      query.includes("close") ||
-      query.includes("schedule") ||
-      query.includes("saturday") ||
-      query.includes("sunday") ||
-      query.includes("friday") ||
-      query.includes("timing")
-    ) {
-      return {
-        type: "text",
-        text: `🕒 **Store Operating Hours**\n\n• **Timings**: ${settings.store_hours}\n• You can order on our website 24/7!`
-      };
-    }
-
-    // 4. Location / Address
-    if (
-      query.includes("location") ||
-      query.includes("where") ||
-      query.includes("address") ||
-      query.includes("map") ||
-      query.includes("place") ||
-      query.includes("city") ||
-      query.includes("mall") ||
-      query.includes("showroom") ||
-      query.includes("shop")
-    ) {
-      return {
-        type: "text",
-        text: `📍 **Store Location**\n\nOur showroom is located at:\n\n• **Address**: ${settings.store_address}\n• Map details and exact directions can be found on our [Contact Page](/contact).`
-      };
-    }
-
-    // 5. Contact Info
-    if (
-      query.includes("contact") ||
-      query.includes("phone") ||
-      query.includes("email") ||
-      query.includes("support") ||
-      query.includes("call") ||
-      query.includes("mobile")
-    ) {
-      return {
-        type: "text",
-        text: `📞 **Customer Support**\n\nGet in touch with us via:\n\n• **Phone**: ${settings.store_phone}\n• **Email**: ${settings.store_email}\n• **WhatsApp**: [Click to chat](https://wa.me/${settings.whatsapp.replace(/\+/g, "")})\n• Or submit a message on our [Contact Page](/contact).`
-      };
-    }
-
-    // 6. Order Tracking / Purchase History
+    // Preserve Order Tracking Logic locally
     if (
       query.includes("track") ||
       query.includes("order") ||
@@ -216,7 +130,6 @@ export default function AIChatbot() {
       query.includes("purchase") ||
       query.includes("my order")
     ) {
-      // Check if user contains a specific Order Number (like #1002 or 1002)
       const orderMatch = query.match(/\b#?(\d{4,6})\b/);
       if (orderMatch) {
         return await lookupOrder(orderMatch[1]);
@@ -257,69 +170,20 @@ export default function AIChatbot() {
       return await lookupOrder(standaloneOrderMatch[1]);
     }
 
-    // 7. Product Search (Fallback)
-    // Clean stop words from query
-    const stopWords = ["find", "search", "show", "me", "buy", "get", "product", "products", "please", "looking", "for", "a", "an", "the", "some", "need", "want"];
-    const keywords = query
-      .split(/\s+/)
-      .filter((word) => !stopWords.includes(word) && word.length > 1);
-
-    if (keywords.length === 0) {
+    // Call Gemini Backend API for all other intents
+    try {
+      const res = await apiClient.chat.send(input);
       return {
         type: "text",
-        text: "I can help you search for products, check stock, track orders, or answer questions about store hours, location, shipping, and returns. What would you like to do?"
+        text: res.text
       };
-    }
-
-    if (loadingDb) {
+    } catch (e) {
+      console.error(e);
       return {
         type: "text",
-        text: "I am currently loading our product catalog, please wait a brief moment and type your search query again."
+        text: "Oops, I'm having trouble connecting to my AI brain right now. Please try again later!"
       };
     }
-
-    if (productsDb.length === 0) {
-      return {
-        type: "text",
-        text: "I was unable to load the product catalog. Please check your network connection or browse the [Shop Page](/shop) directly."
-      };
-    }
-
-    // Perform scoring search
-    const results = productsDb
-      .map((p) => {
-        let score = 0;
-        const nameLower = p.name.toLowerCase();
-        const brandLower = (p.brand || "").toLowerCase();
-        const catLower = p.category.toLowerCase();
-
-        keywords.forEach((keyword) => {
-          if (nameLower.includes(keyword)) score += 2;
-          if (brandLower.includes(keyword)) score += 3;
-          if (catLower.includes(keyword)) score += 1;
-          // Exact matches boost
-          if (nameLower.split(/\s+/).includes(keyword)) score += 2;
-          if (brandLower === keyword) score += 4;
-        });
-
-        return { ...p, score };
-      })
-      .filter((p) => p.score > 0 && p.is_active !== false) // Only active products
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 4);
-
-    if (results.length > 0) {
-      return {
-        type: "products",
-        text: `I found ${results.length} product(s) matching your request:`,
-        data: results
-      };
-    }
-
-    return {
-      type: "text",
-      text: `I couldn't find any products matching "${input}".\n\nTry searching for brands like **Aifen**, **RF4**, **Mechanic**, or categories like **Soldering Station**, **Microscopes**, or **Tweezers**.`
-    };
   };
 
   // Order lookup logic

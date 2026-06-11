@@ -229,4 +229,7 @@ export const apiClient = {
       return apiRequest('POST', '/settings.php', values);
     }
   },
+  chat: {
+    send: (message) => apiRequest('POST', '/chat.php', { message })
+  }
 };
