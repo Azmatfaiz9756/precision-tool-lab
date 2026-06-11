@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { apiClient } from "@/api/apiClient";
 import { useQuery } from "@tanstack/react-query";
-import { CATEGORIES } from "@/lib/constants";
+import { CATEGORIES, formatPrice } from "@/lib/constants";
 import { useAuth } from "@/lib/AuthContext";
 import { useSettings } from "@/lib/utils";
 import { toast } from "sonner";
@@ -27,7 +27,23 @@ export default function Navbar() {
     initialData: [],
   });
 
+  const { data: newArrivals = [] } = useQuery({
+    queryKey: ["navbar-new-arrivals"],
+    queryFn: () => apiClient.entities.Product.list("-created_date", 3),
+    initialData: [],
+  });
+
   const cartCount = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+  const getMarqueeItems = () => {
+    const textLines = (settings.promo_bar_text || "").split(/\n|\|/).map(s => s.trim()).filter(Boolean);
+    const productLines = newArrivals.map(p => `✨ New Arrival: ${p.name} - ${formatPrice(p.price)}`);
+    const combined = [...textLines, ...productLines];
+    if (combined.length === 0) return ["Welcome to TSTTOOLS!"];
+    return combined;
+  };
+  const marqueeItems = getMarqueeItems();
+  const displayMarquee = [...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems];
 
   const PHRASES = [
     "Search tools, kits, equipment...",
@@ -79,12 +95,24 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       {/* Top bar */}
       {settings.promo_bar_enabled && (
-        <div className="border-b border-border/50 bg-secondary/20">
-          <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
-            <div className="flex items-center gap-4">
-              <span>{settings.promo_bar_text}</span>
+        <div className="border-b border-border/50 bg-gradient-to-r from-primary/10 via-blue-500/10 to-primary/10 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+            {/* Scrolling Marquee */}
+            <div className="flex-1 overflow-hidden relative flex items-center">
+              <div className="animate-marquee whitespace-nowrap flex items-center gap-6 py-1.5 px-4 hover:[animation-play-state:paused]">
+                {displayMarquee.map((item, i) => (
+                  <span key={i} className="flex items-center gap-2 text-foreground font-semibold uppercase tracking-wider">
+                    {item.includes("🔥") ? <span className="text-orange-500">{item}</span> : 
+                     item.includes("🚚") ? <span className="text-blue-500">{item}</span> :
+                     item.includes("⚡") || item.includes("✨") ? <span className="text-primary">{item}</span> :
+                     <span className="text-foreground/90">{item}</span>}
+                    {i < displayMarquee.length - 1 && <span className="text-primary/40 mx-1">•</span>}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-4">
+            {/* Right Tools */}
+            <div className="flex items-center gap-4 bg-background/90 backdrop-blur px-4 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
               <div className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer relative group">
                 <MapPin className="h-3 w-3 text-primary" />
                 <select 

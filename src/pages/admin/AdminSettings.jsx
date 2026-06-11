@@ -130,8 +130,8 @@ export default function AdminSettings() {
           </SectionCard>
 
           <SectionCard title="Contact Settings" icon={Phone}>
-            <Field label="Promotional Bar Text" hint="Shown at the top of the website">
-              <Input value={settings.promo_bar_text} onChange={e => set("promo_bar_text", e.target.value)} />
+            <Field label="Promotional Bar Text" hint="Enter one offer per line. Use emojis (🔥, ⚡, 🚚) for icons.">
+              <Textarea rows={4} value={settings.promo_bar_text} onChange={e => set("promo_bar_text", e.target.value)} placeholder="🔥 Free Shipping on orders above AED 200&#10;⚡ New Arrival: Mijing iRepair MS1&#10;🚚 Same Day Delivery in Dubai" />
             </Field>
             <div className="flex items-center gap-3">
               <Switch checked={settings.promo_bar_enabled} onCheckedChange={v => set("promo_bar_enabled", v)} />
