@@ -85,6 +85,17 @@ export default function Navbar() {
 
   const [taglineText, setTaglineText] = useState("");
   const [isTaglineDeleting, setIsTaglineDeleting] = useState(false);
+  const [taglineColorIndex, setTaglineColorIndex] = useState(0);
+
+  const TAGLINE_COLORS = [
+    "from-[#00a854] to-blue-500",
+    "from-red-500 to-pink-500",
+    "from-yellow-400 to-orange-500",
+    "from-blue-600 to-sky-400",
+    "from-green-400 to-emerald-500",
+    "from-purple-500 to-fuchsia-500"
+  ];
+  const currentTaglineColor = TAGLINE_COLORS[taglineColorIndex % TAGLINE_COLORS.length];
 
   useEffect(() => {
     const fullText = settings.store_tagline || "Your precision tool partner";
@@ -97,6 +108,7 @@ export default function Navbar() {
 
     if (isTaglineDeleting && taglineText === "") {
       setIsTaglineDeleting(false);
+      setTaglineColorIndex(prev => prev + 1);
       const timeout = setTimeout(() => {}, 500);
       return () => clearTimeout(timeout);
     }
@@ -221,9 +233,9 @@ export default function Navbar() {
                   <span className="text-[#00a854]">TOOLS</span>
                 </span>
                 <div className="flex items-center gap-1 sm:gap-1.5 absolute top-full left-0 mt-0.5 whitespace-nowrap pointer-events-none">
-                  <span className="text-[11px] sm:text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
+                  <span className={`text-[11px] sm:text-[13px] text-transparent bg-clip-text bg-gradient-to-r ${currentTaglineColor} font-[Caveat] italic font-bold tracking-wide transition-colors duration-1000`}>
                     {taglineText}
-                    <span className="inline-block w-1 h-3 ml-0.5 bg-blue-500/50 animate-pulse" />
+                    <span className={`inline-block w-1 h-3 ml-0.5 bg-gradient-to-r ${currentTaglineColor} animate-pulse`} />
                   </span>
                   <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 animate-pulse shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
