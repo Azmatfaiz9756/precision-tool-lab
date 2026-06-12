@@ -257,12 +257,12 @@ export default function AdminSettings() {
                         </div>
                       </Field>
                       <div className="col-span-2">
-                        <Field label="Image URL" hint="Direct link to the product image (e.g. https://...)">
-                          <Input value={slide.images?.[0] || ""} onChange={e => {
+                        <Field label="Image URLs (Up to 3)" hint="Enter image URLs separated by commas, or just one if you prefer a single image.">
+                          <Input value={(slide.images || []).join(", ")} onChange={e => {
                             const newSlides = [...settings.hero_slides];
-                            newSlides[i].images = [e.target.value];
+                            newSlides[i].images = e.target.value.split(",").map(url => url.trim()).filter(Boolean);
                             set("hero_slides", newSlides);
-                          }} />
+                          }} placeholder="https://img1.jpg, https://img2.jpg, https://img3.jpg" />
                         </Field>
                       </div>
                     </div>

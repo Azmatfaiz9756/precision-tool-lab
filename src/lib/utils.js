@@ -77,20 +77,76 @@ export const SETTINGS_DEFAULTS = {
   maintenance_mode: false,
   hero_slides: [
     {
-      category: "Featured Preheater",
-      label: "MIJING IREPAIR MS1",
-      tagline: "Intelligent PCB Preheater for precise motherboard separation",
-      link: "/shop?search=mijing",
-      accent: "#ef4444",
-      images: ["https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_1.jpg"],
+      category: "Professional Microscopes",
+      label: "TOP MICROSCOPES",
+      tagline: "High-precision trinocular microscopes from top brands",
+      link: "/shop?category=microscopes",
+      accent: "#8b5cf6",
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/6558SE_3.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/1_f4ba7234-a169-42b4-82a1-e403d29a502c.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_2.jpg"
+      ]
     },
     {
-      category: "Soldering Irons",
+      category: "Soldering Stations",
       label: "SOLDERING IRONS",
-      tagline: "Cordless & temperature-controlled irons for every repair job",
+      tagline: "Temperature-controlled precision soldering stations",
       link: "/shop?category=soldering_kits",
       accent: "#0ea5e9",
-      images: ["https://www.diyfixtool.com/cdn/shop/files/FNIRSIHS-03_1.png", "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg", "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png"],
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/FNIRSIHS-03_1.png", 
+        "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png"
+      ]
+    },
+    {
+      category: "Hot Air Guns",
+      label: "HOT AIR REWORK",
+      tagline: "Professional hot air stations for SMD rework",
+      link: "/shop?category=hot_air_guns",
+      accent: "#ef4444",
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/QUICK861DW.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/QUICK2008.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/Sugon8620DX.jpg"
+      ]
+    },
+    {
+      category: "Programmers",
+      label: "IC PROGRAMMERS",
+      tagline: "Advanced NAND & EEPROM programmers for logic boards",
+      link: "/shop?category=programmers",
+      accent: "#10b981",
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/JCPro1000S.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/i2C_I6S.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/V1SE.jpg"
+      ]
+    },
+    {
+      category: "Thermal Cameras",
+      label: "THERMAL IMAGING",
+      tagline: "Detect short circuits instantly with thermal imaging",
+      link: "/shop?category=thermal_cameras",
+      accent: "#f59e0b",
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/Qianli_Super_Cam.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/Seek_Compact.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/Guide_PC210.jpg"
+      ]
+    },
+    {
+      category: "Testing Equipment",
+      label: "MULTIMETERS & TESTERS",
+      tagline: "High-accuracy digital multimeters and power supplies",
+      link: "/shop?category=testing_equipment",
+      accent: "#3b82f6",
+      images: [
+        "https://www.diyfixtool.com/cdn/shop/files/DT-101T.png", 
+        "https://www.diyfixtool.com/cdn/shop/files/YCSX5_1.jpg", 
+        "https://www.diyfixtool.com/cdn/shop/files/E08P.jpg"
+      ]
     }
   ],
 };
