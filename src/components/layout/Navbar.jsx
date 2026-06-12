@@ -96,12 +96,12 @@ export default function Navbar() {
       {/* Top bar */}
       {settings.promo_bar_enabled && (
         <div className="border-b border-border/50 bg-gradient-to-r from-primary/10 via-blue-500/10 to-primary/10 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+          <div className="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-[11px] text-muted-foreground font-mono">
             {/* Scrolling Marquee */}
             <div className="flex-1 overflow-hidden relative flex items-center">
               <div className="animate-marquee whitespace-nowrap flex items-center gap-6 py-1.5 px-4 hover:[animation-play-state:paused]">
                 {displayMarquee.map((item, i) => (
-                  <span key={i} className="flex items-center gap-2 text-foreground font-semibold uppercase tracking-wider">
+                  <span key={i} className="flex items-center gap-2 text-foreground font-semibold uppercase tracking-wider text-[12px] sm:text-[11px]">
                     {item.includes("🔥") ? <span className="text-orange-500">{item}</span> : 
                      item.includes("🚚") ? <span className="text-blue-500">{item}</span> :
                      item.includes("⚡") || item.includes("✨") ? <span className="text-primary">{item}</span> :
@@ -113,10 +113,10 @@ export default function Navbar() {
             </div>
             {/* Right Tools */}
             <div className="flex items-center gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
-              <div className="flex items-center gap-1.5 hover:opacity-90 transition-opacity cursor-pointer relative group bg-[#00a854] text-white px-2.5 py-1 rounded-full border border-white/20 shadow-inner">
-                <MapPin className="h-3 w-3 text-white" />
+              <div className="flex items-center gap-1 hover:opacity-90 transition-opacity cursor-pointer relative group bg-[#00a854] text-white px-2 py-0.5 rounded-full border border-white/20 shadow-inner">
+                <MapPin className="h-2.5 w-2.5 text-white" />
                 <select 
-                  className="bg-transparent border-none outline-none appearance-none cursor-pointer pr-3 text-white font-medium focus:ring-0 focus:outline-none focus:border-none text-[11px]"
+                  className="bg-transparent border-none outline-none appearance-none cursor-pointer pr-3 text-white font-medium focus:ring-0 focus:outline-none focus:border-none text-[10px]"
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                   title="Select your delivery city"
@@ -171,22 +171,22 @@ export default function Navbar() {
 
             {/* Unique Design Logo */}
             <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-9 h-9 rounded-full bg-[#00a854] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-300">
-                <svg viewBox="0 0 24 24" className="w-5.5 h-5.5 text-white fill-current" xmlns="http://www.w3.org/2000/svg">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#00a854] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-300">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white fill-current" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5 4h14v3h-5.5v13h-3V7H5V4z" />
                   <path d="M14.5 13.5l3.5 3.5-1.5 1.5-3.5-3.5z" />
                 </svg>
               </div>
-              <div className="flex flex-col leading-none hidden sm:flex">
-                <span className="font-heading font-black text-xl tracking-tight uppercase">
+              <div className="flex flex-col leading-none">
+                <span className="font-heading font-black text-lg sm:text-xl tracking-tight uppercase">
                   <span className="text-foreground">TST</span>
                   <span className="text-[#00a854]">TOOLS</span>
                 </span>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
+                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5">
+                  <span className="text-[11px] sm:text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
                     {settings.store_tagline || "Your precision tool partner"}
                   </span>
-                  <svg className="w-3.5 h-3.5 text-orange-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
               </div>
             </Link>
@@ -222,7 +222,7 @@ export default function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 h-9 px-3 text-xs border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
               />
-              <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 rounded-none border-l border-border hover:bg-secondary text-muted-foreground hover:text-foreground">
+              <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 rounded-none border-l border-border hover:bg-secondary text-muted-foreground/60 hover:text-foreground">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -231,38 +231,31 @@ export default function Navbar() {
           {/* Right action icons */}
           <div className="flex items-center gap-1 shrink-0">
             {/* Mobile search toggle */}
-            <Button variant="ghost" size="icon" className="sm:hidden h-9 w-9 text-muted-foreground hover:text-foreground" onClick={() => setShowSearch(!showSearch)}>
+            <Button variant="ghost" size="icon" className="sm:hidden h-9 w-9 text-muted-foreground/60 hover:text-foreground" onClick={() => setShowSearch(!showSearch)}>
               <Search className="h-5 w-5" />
             </Button>
 
             {/* WhatsApp */}
             <a href={`https://wa.me/${settings.whatsapp.replace(/\+/g, "")}`} target="_blank" rel="noopener noreferrer"
-              className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground hover:text-[#25D366] transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground/60 hover:text-[#25D366] transition-colors"
               title="Chat on WhatsApp">
               <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.488 1.449 5.407 1.451 5.432.003 9.851-4.413 9.854-9.85.002-2.634-1.02-5.11-2.885-6.978C17.158 1.91 14.685.877 12.012.877c-5.438 0-9.86 4.417-9.864 9.855-.001 1.942.502 3.84 1.458 5.471l-.989 3.611 3.7-.971zm10.742-6.529c-.296-.149-1.75-.863-2.022-.962-.272-.099-.47-.149-.667.149-.197.297-.766.962-.94 1.16-.173.199-.347.223-.643.075-.296-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.667-1.61-.915-2.203-.241-.58-.488-.5-.667-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.75-.717 1.999-1.411.248-.695.248-1.29.173-1.411-.074-.12-.272-.198-.57-.347z"/>
               </svg>
             </a>
 
-            {/* Compare */}
-            <button onClick={() => { navigate("/shop"); toast.info("Product comparison coming soon!"); }}
-              className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-              title="Compare Products">
-              <BarChart2 className="h-4.5 w-4.5" />
-            </button>
-
             {/* Wishlist */}
-            <Button variant="ghost" size="icon" onClick={() => navigate("/account?tab=wishlist")} className="h-9 w-9 text-muted-foreground hover:text-foreground hidden sm:flex" title="Wishlist">
-              <Heart className="h-4.5 w-4.5" />
+            <Button variant="ghost" size="icon" onClick={() => navigate("/account?tab=wishlist")} className={`h-9 w-9 transition-colors hidden sm:flex ${location.search.includes('tab=wishlist') ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground/60 hover:text-red-500'}`} title="Wishlist">
+              <Heart className={`h-4.5 w-4.5 transition-colors ${location.search.includes('tab=wishlist') ? 'fill-red-500 text-red-500' : 'hover:fill-red-500 hover:text-red-500'}`} />
             </Button>
 
             {/* Account */}
-            <Button variant="ghost" size="icon" onClick={() => navigate("/account")} className="h-9 w-9 text-muted-foreground hover:text-foreground" title="Account">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/account")} className="h-9 w-9 text-muted-foreground/60 hover:text-foreground" title="Account">
               <User className="h-4.5 w-4.5" />
             </Button>
 
             {/* Cart (Shopping Bag) */}
-            <Button variant="ghost" size="icon" className="relative h-9 w-9 text-muted-foreground hover:text-foreground" onClick={() => navigate("/cart")} title="Shopping Cart">
+            <Button variant="ghost" size="icon" className="relative h-9 w-9 text-muted-foreground/60 hover:text-foreground" onClick={() => navigate("/cart")} title="Shopping Cart">
               <ShoppingBag className="h-4.5 w-4.5" />
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-[#00a854] text-white text-[9px] font-mono font-bold rounded-full h-4.5 w-4.5 flex items-center justify-center">
