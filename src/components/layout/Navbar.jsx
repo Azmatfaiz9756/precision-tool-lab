@@ -19,6 +19,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [selectedCity, setSelectedCity] = useState("Dubai");
 
   const { data: cartItems = [] } = useQuery({
@@ -139,24 +140,34 @@ export default function Navbar() {
               </div>
             </div>
             {/* Right Tools */}
-            <div className="flex items-center gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
-              <div className="flex items-center hover:opacity-90 transition-opacity cursor-pointer relative group bg-[#00a854] text-white px-2 py-1 rounded-full border border-white/20 shadow-inner min-w-[85px] sm:min-w-[95px]">
-                <MapPin className="h-2.5 w-2.5 text-white pointer-events-none absolute left-2" />
-                <select 
-                  className="bg-transparent border-none outline-none appearance-none cursor-pointer text-white font-medium focus:ring-0 focus:outline-none focus:border-none text-[10px] sm:text-[11px] w-full pl-4 pr-3 h-4"
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
+            <div className="flex items-center gap-2 sm:gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
+              <div className="relative">
+                <button 
+                  onClick={() => setShowCityDropdown(!showCityDropdown)}
+                  className="flex items-center hover:opacity-90 transition-opacity bg-[#00a854] text-white px-2 sm:px-2.5 py-1 rounded-full border border-white/20 shadow-inner w-[45px] sm:w-[95px] overflow-hidden justify-between"
                   title="Select your delivery city"
                 >
-                  <option value="Dubai" className="text-black">Dubai</option>
-                  <option value="Abu Dhabi" className="text-black">Abu Dhabi</option>
-                  <option value="Sharjah" className="text-black">Sharjah</option>
-                  <option value="Ajman" className="text-black">Ajman</option>
-                  <option value="Ras Al Khaimah" className="text-black">Ras Al Khaimah</option>
-                  <option value="Fujairah" className="text-black">Fujairah</option>
-                  <option value="Umm Al Quwain" className="text-black">Umm Al Quwain</option>
-                </select>
-                <ChevronDown className="h-2.5 w-2.5 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-80" />
+                  <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-white shrink-0" />
+                  <span className="hidden sm:block text-[11px] font-medium truncate px-1 text-left flex-1">{selectedCity}</span>
+                  <span className="block sm:hidden text-[9px] font-bold tracking-wider">{selectedCity.substring(0,3).toUpperCase()}</span>
+                  <ChevronDown className="h-2.5 w-2.5 shrink-0 opacity-80 hidden sm:block" />
+                </button>
+                {showCityDropdown && (
+                  <>
+                    <div className="fixed inset-0 z-[100]" onClick={() => setShowCityDropdown(false)} />
+                    <div className="absolute right-0 top-full mt-1.5 bg-card border border-border shadow-xl rounded-lg py-1 w-32 z-[110] text-xs animate-in fade-in slide-in-from-top-2 duration-150">
+                      {["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"].map(city => (
+                        <button 
+                          key={city}
+                          className={`w-full text-left px-3 py-2 hover:bg-[#00a854]/10 transition-colors ${selectedCity === city ? 'text-[#00a854] font-bold' : 'text-foreground'}`}
+                          onClick={() => { setSelectedCity(city); setShowCityDropdown(false); }}
+                        >
+                          {city}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
               <span className="hidden sm:block font-semibold">AED Prices · UAE Market</span>
             </div>
