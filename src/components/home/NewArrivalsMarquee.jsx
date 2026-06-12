@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "@/components/products/ProductCard";
 
+import { useSettings } from "@/lib/utils";
+
 const Firework = ({ className, delay = "0s" }) => (
   <div className={`absolute pointer-events-none flex items-center justify-center ${className}`}>
     <div className="relative flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12">
@@ -11,7 +13,10 @@ const Firework = ({ className, delay = "0s" }) => (
   </div>
 );
 
-export default function NewArrivalsMarquee({ products, title = "New Arrivals" }) {
+export default function NewArrivalsMarquee({ products, title }) {
+  const settings = useSettings();
+  const displayTitle = title || settings.new_arrivals_title || "New Arrivals";
+  
   if (!products || products.length === 0) return null;
 
   const [subtitleText, setSubtitleText] = useState("");
@@ -19,13 +24,19 @@ export default function NewArrivalsMarquee({ products, title = "New Arrivals" })
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(100);
 
-  const subtitles = [
+  const defaultSubtitles = [
     "✨ The latest tools and equipment ✨",
     "🔥 Premium quality for professionals 🔥",
     "🚀 Next generation repair gear 🚀",
     "⚡ Unmatched precision & performance ⚡",
     "🛠️ Upgrade your workshop today 🛠️"
   ];
+  
+  const parsedSubtitles = settings.new_arrivals_subtitle 
+    ? settings.new_arrivals_subtitle.split('\n').map(s => s.trim()).filter(Boolean)
+    : [];
+    
+  const subtitles = parsedSubtitles.length > 0 ? parsedSubtitles : defaultSubtitles;
 
   const colorGradients = [
     "from-red-500 to-pink-500",
@@ -70,7 +81,7 @@ export default function NewArrivalsMarquee({ products, title = "New Arrivals" })
         <div className="relative inline-block">
           <Firework className="-left-10 sm:-left-16 top-1/2 -translate-y-1/2" delay="0s" />
           <h2 className="font-heading font-black text-3xl md:text-4xl tracking-tight uppercase bg-clip-text text-transparent animate-text-gradient bg-[length:200%_auto] bg-[linear-gradient(to_right,#ef4444,#22c55e,#3b82f6,#eab308,#0ea5e9,#ec4899,#ef4444)] pb-1 relative z-10 px-4">
-            {title}
+            {displayTitle}
           </h2>
           <Firework className="-right-10 sm:-right-16 top-1/2 -translate-y-1/2" delay="0.5s" />
         </div>

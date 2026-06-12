@@ -189,8 +189,8 @@ export default function AdminSettings() {
               <Field label="New Arrivals Title">
                 <Input value={settings.new_arrivals_title} onChange={e => set("new_arrivals_title", e.target.value)} />
               </Field>
-              <Field label="New Arrivals Subtitle">
-                <Input value={settings.new_arrivals_subtitle} onChange={e => set("new_arrivals_subtitle", e.target.value)} />
+              <Field label="New Arrivals Typing Subtitles" hint="Enter one subtitle per line. These will animate with a typewriter effect.">
+                <Textarea rows={4} value={settings.new_arrivals_subtitle} onChange={e => set("new_arrivals_subtitle", e.target.value)} placeholder="✨ The latest tools and equipment ✨&#10;🔥 Premium quality for professionals 🔥" />
               </Field>
             </div>
           </SectionCard>

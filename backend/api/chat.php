@@ -143,6 +143,5 @@ Answer the user's question directly based on the store info provided. Be friendl
     echo json_encode(['text' => $finalAnswer]);
 
 } catch (Exception $e) {
-    http_response_code(500);
     echo json_encode(['text' => "Oops, I'm having trouble thinking right now! Error: " . $e->getMessage()]);
 }
