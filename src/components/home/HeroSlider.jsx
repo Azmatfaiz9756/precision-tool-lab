@@ -9,7 +9,7 @@ import { useSettings } from "@/lib/utils";
 
 export default function HeroSlider() {
   const settings = useSettings();
-  const slides = Array.isArray(settings.hero_slides) && settings.hero_slides.length > 0 
+  const dbSlides = Array.isArray(settings.hero_slides) && settings.hero_slides.length > 0 
     ? settings.hero_slides 
     : [
         {
@@ -21,6 +21,15 @@ export default function HeroSlider() {
           images: ["https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_1.jpg"],
         }
       ];
+
+  const slides = [
+    {
+      fullImage: true,
+      link: "/shop",
+      images: ["/home-banner-1.png"]
+    },
+    ...dbSlides
+  ];
 
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -62,43 +71,56 @@ export default function HeroSlider() {
             exit={{ opacity: 0, x: direction > 0 ? -60 : 60, transition: { duration: 0.25 } }}
             className="absolute inset-0 flex flex-col"
           >
-            {/* Images row — takes remaining height above text bar */}
-            <div className="flex flex-1 min-h-0 bg-[#0d1117]">
-              {slide.images.map((img, i) => (
-                <div
-                  key={i}
-                  className="flex-1 relative bg-[#0d1117] flex items-center justify-center overflow-hidden"
-                >
-                  <img
-                    src={img}
-                    alt={slide.category}
-                    className="w-full h-full object-contain p-0.5 sm:p-1 md:p-1.5"
-                    onError={(e) => { e.target.style.opacity = "0.05"; }}
-                  />
-                  {i < slide.images.length - 1 && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[2px] h-[70%] bg-gradient-to-b from-transparent via-white/30 to-transparent z-10" />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Text bar */}
-            <div
-              className="flex items-center justify-between px-5 py-3 md:px-6 md:py-4 flex-shrink-0"
-              style={{ background: slide.accent }}
-            >
-              <div className="min-w-0 pr-3">
-                <span className="text-xs md:text-sm lg:text-base font-black tracking-[0.18em] text-black block leading-none">{slide.label}</span>
-                <p className="text-[11px] md:text-xs lg:text-sm text-black/70 font-medium leading-tight mt-1 truncate">{slide.tagline}</p>
+            {slide.fullImage ? (
+              <div className="flex-1 w-full h-full relative group bg-[#08090c]">
+                <Link to={slide.link || "/shop"} className="absolute inset-0 z-10 block" />
+                <img
+                  src={slide.images[0]}
+                  alt="Promotional Banner"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                />
               </div>
-              <Link
-                to={slide.link}
-                className="text-[10px] md:text-xs lg:text-sm font-black tracking-widest px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 bg-white hover:bg-white/90 shadow-sm"
-                style={{ color: slide.accent }}
-              >
-                SHOP NOW →
-              </Link>
-            </div>
+            ) : (
+              <>
+                {/* Images row — takes remaining height above text bar */}
+                <div className="flex flex-1 min-h-0 bg-[#0d1117]">
+                  {slide.images.map((img, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 relative bg-[#0d1117] flex items-center justify-center overflow-hidden"
+                    >
+                      <img
+                        src={img}
+                        alt={slide.category}
+                        className="w-full h-full object-contain p-0.5 sm:p-1 md:p-1.5"
+                        onError={(e) => { e.target.style.opacity = "0.05"; }}
+                      />
+                      {i < slide.images.length - 1 && (
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[2px] h-[70%] bg-gradient-to-b from-transparent via-white/30 to-transparent z-10" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Text bar */}
+                <div
+                  className="flex items-center justify-between px-5 py-3 md:px-6 md:py-4 flex-shrink-0"
+                  style={{ background: slide.accent }}
+                >
+                  <div className="min-w-0 pr-3">
+                    <span className="text-xs md:text-sm lg:text-base font-black tracking-[0.18em] text-black block leading-none">{slide.label}</span>
+                    <p className="text-[11px] md:text-xs lg:text-sm text-black/70 font-medium leading-tight mt-1 truncate">{slide.tagline}</p>
+                  </div>
+                  <Link
+                    to={slide.link}
+                    className="text-[10px] md:text-xs lg:text-sm font-black tracking-widest px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 bg-white hover:bg-white/90 shadow-sm"
+                    style={{ color: slide.accent }}
+                  >
+                    SHOP NOW →
+                  </Link>
+                </div>
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
