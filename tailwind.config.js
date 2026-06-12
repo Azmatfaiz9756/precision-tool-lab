@@ -91,13 +91,19 @@ module.exports = {
   			'marquee-slow': {
   				'0%': { transform: 'translateX(0%)' },
   				'100%': { transform: 'translateX(-33.33%)' }
+  			},
+  			'text-gradient': {
+  				to: {
+  					backgroundPosition: '200% center'
+  				}
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
   			'marquee': 'marquee 50s linear infinite',
-  			'marquee-slow': 'marquee-slow 100s linear infinite'
+  			'marquee-slow': 'marquee-slow 100s linear infinite',
+  			'text-gradient': 'text-gradient 6s linear infinite reverse'
   		}
   	}
   },

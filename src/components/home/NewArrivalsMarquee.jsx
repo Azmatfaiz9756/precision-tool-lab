@@ -10,10 +10,10 @@ export default function NewArrivalsMarquee({ products, title = "New Arrivals", s
   return (
     <section className="w-full bg-[#08090c] pt-12 pb-6 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 mb-8 text-center">
-        <h2 className="font-heading font-black text-3xl md:text-4xl tracking-tight text-white uppercase">
+        <h2 className="font-heading font-black text-3xl md:text-4xl tracking-tight uppercase bg-clip-text text-transparent animate-text-gradient bg-[length:200%_auto] bg-[linear-gradient(to_right,#ef4444,#22c55e,#3b82f6,#eab308,#0ea5e9,#ec4899,#ef4444)] pb-1">
           {title}
         </h2>
-        <p className="text-white/60 text-sm mt-2">{subtitle}</p>
+        <p className="text-white/60 text-sm mt-1">{subtitle}</p>
       </div>
 
       <div className="relative flex overflow-x-hidden group">
