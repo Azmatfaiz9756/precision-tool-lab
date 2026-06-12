@@ -121,7 +121,7 @@ export default function HeroSlider() {
 
       {/* Dots */}
       <div 
-        className="absolute z-20 flex gap-1.5 items-center left-1/2 -translate-x-1/2 bottom-[60px] md:bottom-[76px]"
+        className="absolute z-20 flex gap-1.5 items-center left-1/2 -translate-x-1/2 bottom-[72px] md:bottom-[90px]"
       >
         {slides.map((_, i) => (
           <button

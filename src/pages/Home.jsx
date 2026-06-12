@@ -41,15 +41,17 @@ export default function Home() {
   });
 
   return (
-    <div>
-      <HeroSlider />
-      
-      {/* New Arrivals Section (Marquee) */}
-      <NewArrivalsMarquee 
-        products={newArrivals} 
-        title={settings.new_arrivals_title} 
-        subtitle={settings.new_arrivals_subtitle} 
-      />
+    <div className="flex flex-col min-h-screen">
+      <div className="bg-[#08090c] pt-1">
+        <HeroSlider />
+        
+        {/* New Arrivals Section (Marquee) */}
+        <NewArrivalsMarquee 
+          products={newArrivals} 
+          title={settings.new_arrivals_title} 
+          subtitle={settings.new_arrivals_subtitle} 
+        />
+      </div>
 
       {/* Shop By Category */}
       <CategoriesGrid categories={CATEGORIES} categoryImages={CATEGORY_IMAGES} />
