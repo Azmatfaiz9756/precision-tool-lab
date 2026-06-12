@@ -27,6 +27,16 @@ export default function NewArrivalsMarquee({ products, title = "New Arrivals" })
     "🛠️ Upgrade your workshop today 🛠️"
   ];
 
+  const colorGradients = [
+    "from-red-500 to-pink-500",
+    "from-yellow-400 to-orange-500",
+    "from-blue-600 to-sky-400",
+    "from-green-400 to-emerald-500",
+    "from-purple-500 to-fuchsia-500"
+  ];
+  
+  const currentColor = colorGradients[loopNum % colorGradients.length];
+
   useEffect(() => {
     let timer;
     const handleType = () => {
@@ -65,9 +75,9 @@ export default function NewArrivalsMarquee({ products, title = "New Arrivals" })
           <Firework className="-right-10 sm:-right-16 top-1/2 -translate-y-1/2" delay="0.5s" />
         </div>
         <div className="h-6 mt-2 flex items-center justify-center">
-          <p className="text-[13px] sm:text-sm font-[Caveat] italic font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-sky-400">
+          <p className={`text-[13px] sm:text-sm font-[Caveat] italic font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r ${currentColor} transition-colors duration-1000`}>
             {subtitleText}
-            <span className="inline-block w-1.5 h-3.5 sm:h-4 ml-1 bg-sky-400/70 animate-pulse align-middle" />
+            <span className={`inline-block w-1.5 h-3.5 sm:h-4 ml-1 bg-gradient-to-r ${currentColor} animate-pulse align-middle`} />
           </p>
         </div>
       </div>
