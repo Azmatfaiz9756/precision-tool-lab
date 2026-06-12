@@ -75,17 +75,19 @@ export const SETTINGS_DEFAULTS = {
   promo_bar_enabled: true,
   promo_bar_text: "🔥 Free Shipping on orders above AED 200 | Same Day Delivery in Dubai",
   maintenance_mode: false,
+  new_arrivals_title: "New Arrivals",
+  new_arrivals_subtitle: "The latest tools and equipment added to our catalog",
   hero_slides: [
     {
-      category: "Professional Microscopes",
-      label: "TOP MICROSCOPES",
-      tagline: "High-precision trinocular microscopes from top brands",
-      link: "/shop?category=microscopes",
+      category: "Featured Preheater",
+      label: "MIJING MS1",
+      tagline: "Professional Motherboard Preheating Station",
+      link: "/product/ms1-preheater",
       accent: "#8b5cf6",
       images: [
-        "https://www.diyfixtool.com/cdn/shop/files/6558SE_3.jpg", 
-        "https://www.diyfixtool.com/cdn/shop/files/1_f4ba7234-a169-42b4-82a1-e403d29a502c.jpg", 
-        "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_2.jpg"
+        "https://www.diyfixtool.com/cdn/shop/files/Mijing_iRepair_MS1_1.jpg",
+        "https://www.diyfixtool.com/cdn/shop/files/FNIRSIHS-03_1.png",
+        "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg"
       ]
     },
     {

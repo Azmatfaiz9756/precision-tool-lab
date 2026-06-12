@@ -184,6 +184,17 @@ export default function AdminSettings() {
             </Field>
           </SectionCard>
 
+          <SectionCard title="Homepage Sections" icon={Palette}>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="New Arrivals Title">
+                <Input value={settings.new_arrivals_title} onChange={e => set("new_arrivals_title", e.target.value)} />
+              </Field>
+              <Field label="New Arrivals Subtitle">
+                <Input value={settings.new_arrivals_subtitle} onChange={e => set("new_arrivals_subtitle", e.target.value)} />
+              </Field>
+            </div>
+          </SectionCard>
+
           <SectionCard title="Hero Banner Slider" icon={Palette}>
             <div className="space-y-4">
               <div className="flex items-center justify-between">

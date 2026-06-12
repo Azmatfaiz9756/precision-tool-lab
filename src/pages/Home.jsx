@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/apiClient";
 import { CATEGORIES } from "@/lib/constants";
+import { useSettings } from "@/lib/utils";
 import HeroSlider from "@/components/home/HeroSlider";
 import NewArrivalsMarquee from "@/components/home/NewArrivalsMarquee";
 import CategoriesGrid from "@/components/home/CategoriesGrid";
@@ -25,6 +26,8 @@ const CATEGORY_IMAGES = {
 };
 
 export default function Home() {
+  const settings = useSettings();
+  
   const { data: bestsellers = [] } = useQuery({
     queryKey: ["products-bestsellers"],
     queryFn: () => apiClient.entities.Product.filter({ is_bestseller: true }, "-created_date", 10),
@@ -44,8 +47,8 @@ export default function Home() {
       {/* New Arrivals Section (Marquee) */}
       <NewArrivalsMarquee 
         products={newArrivals} 
-        title="New Arrivals" 
-        subtitle="The latest tools and equipment added to our catalog" 
+        title={settings.new_arrivals_title} 
+        subtitle={settings.new_arrivals_subtitle} 
       />
 
       {/* Shop By Category */}

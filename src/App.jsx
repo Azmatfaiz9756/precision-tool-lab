@@ -120,6 +120,12 @@ import { apiClient } from '@/api/apiClient';
 function useSEO() {
   useEffect(() => {
     apiClient.settings.get().then(settings => {
+      // Save live API settings to localStorage so useSettings hook can use them
+      if (Object.keys(settings).length > 0) {
+        localStorage.setItem("tsttools_settings", JSON.stringify(settings));
+        window.dispatchEvent(new Event("local-settings-updated"));
+      }
+
       if (settings.meta_title) {
         document.title = settings.meta_title;
       } else if (settings.store_name) {
