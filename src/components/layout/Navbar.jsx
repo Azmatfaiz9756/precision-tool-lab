@@ -205,17 +205,17 @@ export default function Navbar() {
                   <path d="M14.5 13.5l3.5 3.5-1.5 1.5-3.5-3.5z" />
                 </svg>
               </div>
-              <div className="flex flex-col leading-none">
+              <div className="flex flex-col leading-none relative z-10 w-[90px] sm:w-[120px]">
                 <span className="font-heading font-black text-lg sm:text-xl tracking-tight uppercase">
                   <span className="text-foreground">TST</span>
                   <span className="text-[#00a854]">TOOLS</span>
                 </span>
-                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 min-h-[20px]">
+                <div className="flex items-center gap-1 sm:gap-1.5 absolute top-full left-0 mt-0.5 whitespace-nowrap pointer-events-none">
                   <span className="text-[11px] sm:text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
                     {taglineText}
                     <span className="inline-block w-1 h-3 ml-0.5 bg-blue-500/50 animate-pulse" />
                   </span>
-                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 animate-pulse shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
               </div>
             </Link>

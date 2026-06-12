@@ -25,7 +25,7 @@ export default function CategoriesGrid({ categories, categoryImages }) {
           <h2 className="font-heading font-bold text-2xl md:text-3xl">Shop by Category</h2>
           <p className="text-muted-foreground text-sm mt-1">Find the right tools for every repair</p>
         </div>
-        <Link to="/shop" className="text-primary text-sm font-medium hover:underline hidden sm:block">
+        <Link to="/shop" className="text-primary text-sm font-medium hover:underline">
           View All →
         </Link>
       </div>
