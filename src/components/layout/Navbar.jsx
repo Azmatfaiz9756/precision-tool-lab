@@ -178,19 +178,16 @@ export default function Navbar() {
                 </svg>
               </div>
               <div className="flex flex-col leading-none hidden sm:flex">
-                <span className="font-heading font-black text-base tracking-tight uppercase">
-                  {(settings.store_name || "").replace(/\s+/g, "").toUpperCase() === "TSTTOOLS" ? (
-                    <>
-                      <span className="text-black">TST</span>
-                      <span className="text-[#00a854]">TOOLS</span>
-                    </>
-                  ) : (
-                    <span className="text-foreground">{settings.store_name}</span>
-                  )}
+                <span className="font-heading font-black text-xl tracking-tight uppercase">
+                  <span className="text-foreground">TST</span>
+                  <span className="text-[#00a854]">TOOLS</span>
                 </span>
-                <span className="text-[8px] text-muted-foreground font-mono tracking-wider mt-0.5 uppercase">
-                  {settings.store_tagline}
-                </span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
+                    {settings.store_tagline || "Your precision tool partner"}
+                  </span>
+                  <svg className="w-3.5 h-3.5 text-orange-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                </div>
               </div>
             </Link>
 
