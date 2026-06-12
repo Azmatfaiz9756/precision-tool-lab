@@ -14,7 +14,7 @@ const Firework = ({ className, delay = "0s" }) => (
 );
 
 export default function NewArrivalsMarquee({ products, title }) {
-  const settings = useSettings();
+  const settings = useSettings() || {};
   const displayTitle = title || settings.new_arrivals_title || "New Arrivals";
   
   if (!products || products.length === 0) return null;
@@ -32,7 +32,7 @@ export default function NewArrivalsMarquee({ products, title }) {
     "🛠️ Upgrade your workshop today 🛠️"
   ];
   
-  const parsedSubtitles = settings.new_arrivals_subtitle 
+  const parsedSubtitles = (settings && typeof settings.new_arrivals_subtitle === 'string')
     ? settings.new_arrivals_subtitle.split('\n').map(s => s.trim()).filter(Boolean)
     : [];
     

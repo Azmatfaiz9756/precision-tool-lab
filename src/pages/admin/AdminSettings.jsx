@@ -130,13 +130,8 @@ export default function AdminSettings() {
           </SectionCard>
 
           <SectionCard title="Contact Settings" icon={Phone}>
-            <Field label="Promotional Bar Text" hint="Enter one offer per line. Use emojis (🔥, ⚡, 🚚) for icons.">
-              <Textarea rows={4} value={settings.promo_bar_text} onChange={e => set("promo_bar_text", e.target.value)} placeholder="🔥 Free Shipping on orders above AED 200&#10;⚡ New Arrival: Mijing iRepair MS1&#10;🚚 Same Day Delivery in Dubai" />
-            </Field>
-            <div className="flex items-center gap-3">
-              <Switch checked={settings.promo_bar_enabled} onCheckedChange={v => set("promo_bar_enabled", v)} />
-              <Label className="text-sm">Show promotional announcement bar</Label>
-            </div>
+            {/* Removed promo bar from here */}
+            <div className="text-xs text-muted-foreground">Store contact settings are managed above.</div>
           </SectionCard>
         </TabsContent>
 
@@ -182,6 +177,16 @@ export default function AdminSettings() {
             <Field label="Banner/Announcement Text">
               <Input value={settings.banner_text} onChange={e => set("banner_text", e.target.value)} />
             </Field>
+          </SectionCard>
+
+          <SectionCard title="Top Header Marquee (Promo Bar)" icon={Globe}>
+            <Field label="Header Marquee Text" hint="Enter one offer per line. Use emojis (🔥, ⚡, 🚚) for icons.">
+              <Textarea rows={4} value={settings.promo_bar_text || ""} onChange={e => set("promo_bar_text", e.target.value)} placeholder="🔥 Free Shipping on orders above AED 200&#10;⚡ New Arrival: Mijing iRepair MS1&#10;🚚 Same Day Delivery in Dubai" />
+            </Field>
+            <div className="flex items-center gap-3 mt-2">
+              <Switch checked={settings.promo_bar_enabled !== false} onCheckedChange={v => set("promo_bar_enabled", v)} />
+              <Label className="text-sm">Show promotional header marquee</Label>
+            </div>
           </SectionCard>
 
           <SectionCard title="Homepage Sections" icon={Palette}>
