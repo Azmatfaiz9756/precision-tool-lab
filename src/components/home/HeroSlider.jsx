@@ -3,80 +3,25 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const slides = [
-  {
-    category: "Featured Preheater",
-    label: "MIJING IREPAIR MS1",
-    tagline: "Intelligent PCB Preheater for precise motherboard separation",
-    link: "/shop?search=mijing",
-    accent: "#ef4444",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/Mijing_iRepair_MS1_1.jpg",
-    ],
-  },
-  {
-    category: "Soldering Irons",
-    label: "SOLDERING IRONS",
-    tagline: "Cordless & temperature-controlled irons for every repair job",
-    link: "/shop?category=soldering_kits",
-    accent: "#0ea5e9",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/FNIRSIHS-03_1.png",
-      "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png",
-    ],
-  },
-  {
-    category: "Opening Tools",
-    label: "OPENING TOOLS",
-    tagline: "Screen separators & heating presses for safe device opening",
-    link: "/shop?category=opening_tools",
-    accent: "#10b981",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/ls6pro.png",
-      "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_1.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_2.jpg",
-    ],
-  },
-  {
-    category: "Precision Tools",
-    label: "PRECISION TOOLS",
-    tagline: "Screwdriver sets & tweezers built for micro-level accuracy",
-    link: "/shop?category=precision_tools",
-    accent: "#8b5cf6",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/6558SE_3.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_2.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/E08P.jpg",
-    ],
-  },
-  {
-    category: "Testing Equipment",
-    label: "TESTING EQUIPMENT",
-    tagline: "Multimeters & diagnostic tools to detect faults instantly",
-    link: "/shop?category=testing_equipment",
-    accent: "#ef4444",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/DT-101T.png",
-      "https://www.diyfixtool.com/cdn/shop/files/YCSX5_1.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/E08P.jpg",
-    ],
-  },
-  {
-    category: "Complete Repair Kits",
-    label: "COMPLETE REPAIR KITS",
-    tagline: "All-in-one kits — everything you need to start repairing today",
-    link: "/shop?category=complete_repair_kits",
-    accent: "#06b6d4",
-    images: [
-      "https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_2.jpg",
-      "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png",
-      "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg",
-    ],
-  },
-];
+// Hardcoded defaults moved inside component as fallback
+
+import { useSettings } from "@/lib/utils";
 
 export default function HeroSlider() {
+  const settings = useSettings();
+  const slides = Array.isArray(settings.hero_slides) && settings.hero_slides.length > 0 
+    ? settings.hero_slides 
+    : [
+        {
+          category: "Featured Preheater",
+          label: "MIJING IREPAIR MS1",
+          tagline: "Intelligent PCB Preheater for precise motherboard separation",
+          link: "/shop?search=mijing",
+          accent: "#ef4444",
+          images: ["https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_1.jpg"],
+        }
+      ];
+
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const timerRef = useRef(null);

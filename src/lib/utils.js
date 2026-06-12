@@ -75,6 +75,24 @@ export const SETTINGS_DEFAULTS = {
   promo_bar_enabled: true,
   promo_bar_text: "🔥 Free Shipping on orders above AED 200 | Same Day Delivery in Dubai",
   maintenance_mode: false,
+  hero_slides: [
+    {
+      category: "Featured Preheater",
+      label: "MIJING IREPAIR MS1",
+      tagline: "Intelligent PCB Preheater for precise motherboard separation",
+      link: "/shop?search=mijing",
+      accent: "#ef4444",
+      images: ["https://www.diyfixtool.com/cdn/shop/files/MobiToolSTD-15Ultra_1.jpg"],
+    },
+    {
+      category: "Soldering Irons",
+      label: "SOLDERING IRONS",
+      tagline: "Cordless & temperature-controlled irons for every repair job",
+      link: "/shop?category=soldering_kits",
+      accent: "#0ea5e9",
+      images: ["https://www.diyfixtool.com/cdn/shop/files/FNIRSIHS-03_1.png", "https://www.diyfixtool.com/cdn/shop/files/aifenF4_3.jpg", "https://www.diyfixtool.com/cdn/shop/files/CH898_1.png"],
+    }
+  ],
 };
 
 export function getSettings() {

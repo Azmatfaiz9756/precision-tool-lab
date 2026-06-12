@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Save, Store, Truck, Phone, Palette, Globe, Shield, Bell } from "lucide-react";
+import { Save, Store, Truck, Phone, Palette, Globe, Shield, Bell, Plus, Trash2 } from "lucide-react";
 import { SETTINGS_DEFAULTS } from "@/lib/utils";
 import { apiClient } from "@/api/apiClient";
 
@@ -182,6 +182,94 @@ export default function AdminSettings() {
             <Field label="Banner/Announcement Text">
               <Input value={settings.banner_text} onChange={e => set("banner_text", e.target.value)} />
             </Field>
+          </SectionCard>
+
+          <SectionCard title="Hero Banner Slider" icon={Palette}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm font-medium">Homepage Slider Images</Label>
+                  <p className="text-xs text-muted-foreground">Manage the big promotional banner images.</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => {
+                  const newSlides = [...(settings.hero_slides || [])];
+                  newSlides.push({ category: "New Category", label: "NEW ITEM", tagline: "Description", link: "/shop", accent: "#00a854", images: [""] });
+                  set("hero_slides", newSlides);
+                }}>
+                  <Plus className="h-4 w-4 mr-1" /> Add Slide
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {(settings.hero_slides || []).map((slide, i) => (
+                  <div key={i} className="p-4 border border-border rounded-lg bg-secondary/20 relative">
+                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        const newSlides = [...settings.hero_slides];
+                        newSlides.splice(i, 1);
+                        set("hero_slides", newSlides);
+                      }}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <div className="grid grid-cols-2 gap-3 pr-8">
+                      <Field label="Title / Label">
+                        <Input value={slide.label} onChange={e => {
+                          const newSlides = [...settings.hero_slides];
+                          newSlides[i].label = e.target.value;
+                          set("hero_slides", newSlides);
+                        }} />
+                      </Field>
+                      <Field label="Category / Top Text">
+                        <Input value={slide.category} onChange={e => {
+                          const newSlides = [...settings.hero_slides];
+                          newSlides[i].category = e.target.value;
+                          set("hero_slides", newSlides);
+                        }} />
+                      </Field>
+                      <div className="col-span-2">
+                        <Field label="Description Tagline">
+                          <Input value={slide.tagline} onChange={e => {
+                            const newSlides = [...settings.hero_slides];
+                            newSlides[i].tagline = e.target.value;
+                            set("hero_slides", newSlides);
+                          }} />
+                        </Field>
+                      </div>
+                      <Field label="Button Link">
+                        <Input value={slide.link} onChange={e => {
+                          const newSlides = [...settings.hero_slides];
+                          newSlides[i].link = e.target.value;
+                          set("hero_slides", newSlides);
+                        }} />
+                      </Field>
+                      <Field label="Background Color (Accent)">
+                        <div className="flex gap-2">
+                          <input type="color" value={slide.accent} onChange={e => {
+                            const newSlides = [...settings.hero_slides];
+                            newSlides[i].accent = e.target.value;
+                            set("hero_slides", newSlides);
+                          }} className="h-9 w-12 rounded border border-border cursor-pointer bg-background" />
+                          <Input value={slide.accent} onChange={e => {
+                            const newSlides = [...settings.hero_slides];
+                            newSlides[i].accent = e.target.value;
+                            set("hero_slides", newSlides);
+                          }} className="font-mono text-xs flex-1" />
+                        </div>
+                      </Field>
+                      <div className="col-span-2">
+                        <Field label="Image URL" hint="Direct link to the product image (e.g. https://...)">
+                          <Input value={slide.images?.[0] || ""} onChange={e => {
+                            const newSlides = [...settings.hero_slides];
+                            newSlides[i].images = [e.target.value];
+                            set("hero_slides", newSlides);
+                          }} />
+                        </Field>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </SectionCard>
         </TabsContent>
 
