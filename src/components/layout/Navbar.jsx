@@ -113,23 +113,24 @@ export default function Navbar() {
             </div>
             {/* Right Tools */}
             <div className="flex items-center gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
-              <div className="flex items-center gap-1 hover:opacity-90 transition-opacity cursor-pointer relative group bg-[#00a854] text-white px-2 py-0.5 rounded-full border border-white/20 shadow-inner">
-                <MapPin className="h-2.5 w-2.5 text-white" />
+              <div className="flex items-center gap-1 hover:opacity-90 transition-opacity cursor-pointer relative group bg-[#00a854] text-white px-2 py-0.5 rounded-full border border-white/20 shadow-inner overflow-hidden min-w-[70px]">
+                <MapPin className="h-2.5 w-2.5 text-white pointer-events-none z-10" />
+                <span className="text-[10px] font-medium pr-3 pointer-events-none z-10">{selectedCity}</span>
                 <select 
-                  className="bg-transparent border-none outline-none appearance-none cursor-pointer pr-3 text-white font-medium focus:ring-0 focus:outline-none focus:border-none text-[10px]"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                   title="Select your delivery city"
                 >
-                  <option value="Dubai" className="text-black">Dubai</option>
-                  <option value="Abu Dhabi" className="text-black">Abu Dhabi</option>
-                  <option value="Sharjah" className="text-black">Sharjah</option>
-                  <option value="Ajman" className="text-black">Ajman</option>
-                  <option value="Ras Al Khaimah" className="text-black">Ras Al Khaimah</option>
-                  <option value="Fujairah" className="text-black">Fujairah</option>
-                  <option value="Umm Al Quwain" className="text-black">Umm Al Quwain</option>
+                  <option value="Dubai">Dubai</option>
+                  <option value="Abu Dhabi">Abu Dhabi</option>
+                  <option value="Sharjah">Sharjah</option>
+                  <option value="Ajman">Ajman</option>
+                  <option value="Ras Al Khaimah">Ras Al Khaimah</option>
+                  <option value="Fujairah">Fujairah</option>
+                  <option value="Umm Al Quwain">Umm Al Quwain</option>
                 </select>
-                <ChevronDown className="h-3 w-3 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-80" />
+                <ChevronDown className="h-2.5 w-2.5 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-80 z-10" />
               </div>
               <span className="hidden sm:block font-semibold">AED Prices · UAE Market</span>
             </div>
