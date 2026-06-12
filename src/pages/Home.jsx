@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/apiClient";
 import { CATEGORIES } from "@/lib/constants";
 import HeroSlider from "@/components/home/HeroSlider";
+import NewArrivalsMarquee from "@/components/home/NewArrivalsMarquee";
 import CategoriesGrid from "@/components/home/CategoriesGrid";
 import BestsellersCarousel from "@/components/home/BestsellersCarousel";
 import PartnerBrands from "@/components/home/PartnerBrands";
@@ -39,14 +40,16 @@ export default function Home() {
   return (
     <div>
       <HeroSlider />
-      <CategoriesGrid categories={CATEGORIES} categoryImages={CATEGORY_IMAGES} />
       
-      {/* New Arrivals Section */}
-      <BestsellersCarousel 
+      {/* New Arrivals Section (Marquee) */}
+      <NewArrivalsMarquee 
         products={newArrivals} 
         title="New Arrivals" 
         subtitle="The latest tools and equipment added to our catalog" 
       />
+
+      {/* Shop By Category */}
+      <CategoriesGrid categories={CATEGORIES} categoryImages={CATEGORY_IMAGES} />
       
       {/* Best Selling Section */}
       <BestsellersCarousel 

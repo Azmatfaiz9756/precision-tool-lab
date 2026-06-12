@@ -93,7 +93,8 @@ export default function HeroSlider() {
               </div>
               <Link
                 to={slide.link}
-                className="text-[10px] md:text-xs lg:text-sm font-black tracking-widest text-black bg-black/10 hover:bg-black/20 px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0"
+                className="text-[10px] md:text-xs lg:text-sm font-black tracking-widest px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 bg-white hover:bg-white/90 shadow-sm"
+                style={{ color: slide.accent }}
               >
                 SHOP NOW →
               </Link>
