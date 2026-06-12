@@ -82,6 +82,33 @@ export default function Navbar() {
     return () => clearTimeout(timeout);
   }, [placeholderText, isDeleting, phraseIndex]);
 
+  const [taglineText, setTaglineText] = useState("");
+  const [isTaglineDeleting, setIsTaglineDeleting] = useState(false);
+
+  useEffect(() => {
+    const fullText = settings.store_tagline || "Your precision tool partner";
+    let typingSpeed = isTaglineDeleting ? 40 : 100;
+
+    if (!isTaglineDeleting && taglineText === fullText) {
+      const timeout = setTimeout(() => setIsTaglineDeleting(true), 3000);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isTaglineDeleting && taglineText === "") {
+      setIsTaglineDeleting(false);
+      const timeout = setTimeout(() => {}, 500);
+      return () => clearTimeout(timeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setTaglineText((prev) => 
+        isTaglineDeleting ? prev.slice(0, -1) : fullText.slice(0, prev.length + 1)
+      );
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [taglineText, isTaglineDeleting, settings.store_tagline]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -183,9 +210,10 @@ export default function Navbar() {
                   <span className="text-foreground">TST</span>
                   <span className="text-[#00a854]">TOOLS</span>
                 </span>
-                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5">
+                <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 min-h-[20px]">
                   <span className="text-[11px] sm:text-[13px] text-transparent bg-clip-text bg-gradient-to-r from-[#00a854] to-blue-500 font-[Caveat] italic font-bold tracking-wide">
-                    {settings.store_tagline || "Your precision tool partner"}
+                    {taglineText}
+                    <span className="inline-block w-1 h-3 ml-0.5 bg-blue-500/50 animate-pulse" />
                   </span>
                   <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
@@ -238,7 +266,7 @@ export default function Navbar() {
 
             {/* WhatsApp */}
             <a href={`https://wa.me/${settings.whatsapp.replace(/\+/g, "")}`} target="_blank" rel="noopener noreferrer"
-              className="h-9 w-9 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground/60 hover:text-[#25D366] transition-colors"
+              className="hidden sm:flex h-9 w-9 items-center justify-center rounded-full hover:bg-secondary text-muted-foreground/60 hover:text-[#25D366] transition-colors"
               title="Chat on WhatsApp">
               <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.488 1.449 5.407 1.451 5.432.003 9.851-4.413 9.854-9.85.002-2.634-1.02-5.11-2.885-6.978C17.158 1.91 14.685.877 12.012.877c-5.438 0-9.86 4.417-9.864 9.855-.001 1.942.502 3.84 1.458 5.471l-.989 3.611 3.7-.971zm10.742-6.529c-.296-.149-1.75-.863-2.022-.962-.272-.099-.47-.149-.667.149-.197.297-.766.962-.94 1.16-.173.199-.347.223-.643.075-.296-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.667-1.61-.915-2.203-.241-.58-.488-.5-.667-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.75-.717 1.999-1.411.248-.695.248-1.29.173-1.411-.074-.12-.272-.198-.57-.347z"/>
@@ -246,7 +274,7 @@ export default function Navbar() {
             </a>
 
             {/* Wishlist */}
-            <Button variant="ghost" size="icon" onClick={() => navigate("/account?tab=wishlist")} className={`h-9 w-9 transition-colors hidden sm:flex ${location.search.includes('tab=wishlist') ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground/60 hover:text-red-500'}`} title="Wishlist">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/account?tab=wishlist")} className={`h-9 w-9 transition-colors flex ${location.search.includes('tab=wishlist') ? 'text-red-500 hover:text-red-600' : 'text-muted-foreground/60 hover:text-red-500'}`} title="Wishlist">
               <Heart className={`h-4.5 w-4.5 transition-colors ${location.search.includes('tab=wishlist') ? 'fill-red-500 text-red-500' : 'hover:fill-red-500 hover:text-red-500'}`} />
             </Button>
 

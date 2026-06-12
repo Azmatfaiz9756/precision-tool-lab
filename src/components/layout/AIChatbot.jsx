@@ -262,7 +262,7 @@ export default function AIChatbot() {
       {/* Chat Window Popup */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-6 w-[380px] h-[550px] max-w-[calc(100vw-32px)] border border-white/10 bg-[#0e1320]/95 backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col overflow-hidden z-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5"
+          className="fixed inset-0 sm:inset-auto sm:bottom-24 sm:right-6 w-full sm:w-[380px] h-[100dvh] sm:h-[550px] border-0 sm:border border-white/10 bg-[#0e1320] sm:bg-[#0e1320]/95 backdrop-blur-lg shadow-2xl rounded-none sm:rounded-2xl flex flex-col overflow-hidden z-[100] transition-all duration-300 animate-in fade-in slide-in-from-bottom-5"
           id="ai-chatbot-window"
         >
           {/* Header */}
