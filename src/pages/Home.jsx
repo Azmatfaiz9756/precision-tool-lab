@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { MapPin, ChevronDown } from "lucide-react";
 import { apiClient } from "@/api/apiClient";
 import { CATEGORIES } from "@/lib/constants";
 import { useSettings } from "@/lib/utils";
@@ -27,6 +28,8 @@ const CATEGORY_IMAGES = {
 
 export default function Home() {
   const settings = useSettings();
+  const [selectedCity, setSelectedCity] = useState("Dubai");
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
   
   const { data: bestsellers = [] } = useQuery({
     queryKey: ["products-bestsellers"],
@@ -45,6 +48,36 @@ export default function Home() {
       <div className="bg-[#08090c] pt-1">
         <HeroSlider />
         
+        {/* Mobile City Selector (Centered below Banner, above Marquee) */}
+        <div className="sm:hidden flex justify-center mt-4 mb-2 relative z-50">
+          <div className="relative">
+            <button 
+              onClick={() => setShowCityDropdown(!showCityDropdown)}
+              className="flex items-center justify-between hover:opacity-90 transition-opacity bg-[#00a854] text-white px-3 py-1.5 rounded-full border border-white/20 shadow-inner w-[160px]"
+            >
+              <MapPin className="h-4 w-4 text-white shrink-0" />
+              <span className="text-sm font-bold px-2">{selectedCity}</span>
+              <ChevronDown className="h-4 w-4 shrink-0 opacity-80" />
+            </button>
+            {showCityDropdown && (
+              <>
+                <div className="fixed inset-0 z-[100]" onClick={() => setShowCityDropdown(false)} />
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 bg-card border border-border shadow-xl rounded-lg py-1 w-48 z-[110] text-sm animate-in fade-in zoom-in-95 duration-150">
+                  {["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Ras Al Khaimah", "Fujairah", "Umm Al Quwain"].map(city => (
+                    <button 
+                      key={city}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#00a854]/10 transition-colors ${selectedCity === city ? 'text-[#00a854] font-bold' : 'text-foreground'}`}
+                      onClick={() => { setSelectedCity(city); setShowCityDropdown(false); }}
+                    >
+                      {city}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
         {/* New Arrivals Section (Marquee) */}
         <NewArrivalsMarquee 
           products={newArrivals} 

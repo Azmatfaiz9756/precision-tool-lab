@@ -140,7 +140,7 @@ export default function Navbar() {
               </div>
             </div>
             {/* Right Tools */}
-            <div className="flex items-center gap-2 sm:gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
+            <div className="hidden sm:flex items-center gap-3 bg-background/90 backdrop-blur px-3 py-1.5 shrink-0 z-10 border-l border-border/50 shadow-sm relative shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
               <div className="relative">
                 <button 
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
